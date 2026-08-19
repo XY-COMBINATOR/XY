@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sidebar";
 import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
+import { apiFailureMessage } from "@/lib/apiFailure";
 import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -46,7 +47,7 @@ export default function DashboardLayout({
     const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
     return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
   });
-  const { loading, user } = useAuth();
+  const { error, loading, refresh, user } = useAuth();
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
@@ -54,6 +55,19 @@ export default function DashboardLayout({
 
   if (loading) {
     return <DashboardLayoutSkeleton />
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-query-recovery" role="alert">
+        <div>
+          <p>SESSION UNAVAILABLE</p>
+          <h1>THE CONTROL ROOM<br />IS OUT OF RANGE.</h1>
+          <span>{apiFailureMessage(error)}</span>
+          <Button onClick={() => void refresh()}>Retry connection</Button>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {

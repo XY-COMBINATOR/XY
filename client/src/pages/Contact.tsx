@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ArrowUpRight, Check, LoaderCircle } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, Check, LoaderCircle, RotateCcw } from "lucide-react";
 import { PublicFrame } from "@/components/PublicFrame";
 import { trpc } from "@/lib/trpc";
+import { apiFailureMessage } from "@/lib/apiFailure";
 
 type FormStatus = "idle" | "sent" | "error";
 
@@ -16,14 +17,29 @@ export default function Contact() {
   const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
   const submit = trpc.contact.submit.useMutation({
-    onSuccess: () => { setStatus("sent"); setName(""); setEmail(""); setMessage(""); },
+    onSuccess: () => {
+      setStatus("sent");
+      setName("");
+      setEmail("");
+      setMessage("");
+    },
     onError: () => setStatus("error"),
   });
+
+  function sendInquiry() {
+    submit.mutate({ name, email, message, website });
+  }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("idle");
-    submit.mutate({ name, email, message, website });
+    sendInquiry();
+  }
+
+  function handleRetry() {
+    setStatus("idle");
+    submit.reset();
+    sendInquiry();
   }
 
   return (
@@ -37,7 +53,14 @@ export default function Contact() {
           <label className="honeypot" aria-hidden="true">Website<input value={website} onChange={(event) => setWebsite(event.target.value)} tabIndex={-1} autoComplete="off" /></label>
           <button type="submit" disabled={submit.isPending}>{submit.isPending ? <><LoaderCircle size={18} className="spin" /> Sending</> : <>Send the signal <ArrowUpRight size={18} /></>}</button>
           {status === "sent" && <p className="form-state success"><Check size={17} /> Received. We will be in touch.</p>}
-          {status === "error" && <p className="form-state error">We could not send that yet. Check the details and try again.</p>}
+          {status === "error" && (
+            <div className="form-recovery" role="alert">
+              <p className="form-state error"><AlertTriangle size={17} />{apiFailureMessage(submit.error)}</p>
+              <button type="button" className="form-retry" onClick={handleRetry} disabled={submit.isPending}>
+                <RotateCcw size={15} /> Try again
+              </button>
+            </div>
+          )}
         </form>
       </main>
     </PublicFrame>

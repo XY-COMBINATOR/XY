@@ -8,6 +8,8 @@ import App from "./App";
 import { startLogin } from "./const";
 import "./index.css";
 import { assetUrl } from "./lib/assets";
+import { apiTimeoutMs } from "./lib/apiFailure";
+import { ApiRecoveryNotice } from "./components/ApiRecoveryNotice";
 
 const queryClient = new QueryClient();
 
@@ -72,9 +74,16 @@ const trpcClient = trpc.createClient({
         return {};
       },
       fetch(input, init) {
+        // Abort slow serverless calls rather than leaving a pending UI forever.
+        const timeoutSignal = AbortSignal.timeout(apiTimeoutMs);
+        const signal = init?.signal
+          ? AbortSignal.any([init.signal, timeoutSignal])
+          : timeoutSignal;
+
         return globalThis.fetch(input, {
           ...(init ?? {}),
           credentials: "include",
+          signal,
         });
       },
     }),
@@ -85,6 +94,7 @@ createRoot(document.getElementById("root")!).render(
   <trpc.Provider client={trpcClient} queryClient={queryClient}>
     <QueryClientProvider client={queryClient}>
       <App />
+      <ApiRecoveryNotice queryClient={queryClient} />
     </QueryClientProvider>
   </trpc.Provider>
 );

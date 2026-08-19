@@ -39,3 +39,9 @@
 - [x] Configure the verified public raw GitHub artwork origin as the durable Vercel asset fallback.
 - [x] Replace the initial Vercel favicon request with a static deployable fallback before runtime asset configuration.
 - [x] Add automated verification for Vercel SPA rewrite exclusions and external branded asset URL composition.
+- [x] Add a responsive skeleton loading state for data-dependent dashboard content while serverless API requests are pending.
+- [x] Implement a custom interactive 404 page for unmatched client routes.
+- [x] Handle API timeouts and serverless request failures gracefully with clear recovery actions.
+- [x] Add regression tests and verify the resilience update across routes, types, and the production build.
+- [x] Wire an authenticated dashboard route to show a data-aware skeleton while its serverless query is pending.
+- [x] Present clear retryable recovery feedback for global auth and query timeouts instead of console-only failure handling.
