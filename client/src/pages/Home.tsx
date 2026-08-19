@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
+import { assetUrl } from "@/lib/assets";
 import { ProjectsArchive } from "@/components/ProjectsArchive";
 import {
   ArrowDownRight,
@@ -104,7 +105,7 @@ export default function Home() {
       <div className="grain" aria-hidden="true" />
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
         <ScrollLink href="#top" className="brand-lockup" aria-label="XY COMBINATOR home">
-          <span className="brand-mark-shell" aria-hidden="true"><img src="/manus-storage/xy-combinator-brand-mark_8b6de4c4.png" alt="" className="brand-mark" /><i /></span>
+          <span className="brand-mark-shell" aria-hidden="true"><img src={assetUrl("/manus-storage/xy-combinator-brand-mark_8b6de4c4.png")} alt="" className="brand-mark" /><i /></span>
           <span className="brand-wordmark"><b>XY</b><b>COMBINATOR</b></span>
         </ScrollLink>
 
@@ -166,7 +167,7 @@ export default function Home() {
           </motion.div>
 
           <motion.div className="hero-orbit-wrap" initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}>
-            <img src="/manus-storage/xy-combinator-brand-mark_8b6de4c4.png" alt="XY COMBINATOR original red and black team artwork" className="hero-orbit" />
+            <img src={assetUrl("/manus-storage/xy-combinator-brand-mark_8b6de4c4.png")} alt="XY COMBINATOR original red and black team artwork" className="hero-orbit" />
             <span className="orbit-caption top">X / 41.19</span>
             <span className="orbit-caption bottom">Y / 02.04</span>
             <span className="orbit-pulse" aria-hidden="true" />
@@ -197,7 +198,7 @@ export default function Home() {
               </motion.div>
             </motion.div>
             <motion.figure className="about-art" initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 35 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}>
-              <img src="/manus-storage/xy-editorial-surface_fdafb998.png" alt="Abstract editorial surface with a coordinate grid and signal markings" />
+              <img src={assetUrl("/manus-storage/xy-editorial-surface_fdafb998.png")} alt="Abstract editorial surface with a coordinate grid and signal markings" />
               <figcaption><span>UNLIKELY PAIRS / USEFUL TENSION</span><span>2026</span></figcaption>
             </motion.figure>
           </div>
@@ -242,7 +243,7 @@ export default function Home() {
               })}
             </div>
             <div className="team-summary" aria-live="polite">
-              <img src="/manus-storage/xy-team-field_bc07f035.png" alt="Four abstract forms in a shared visual system" />
+              <img src={assetUrl("/manus-storage/xy-team-field_bc07f035.png")} alt="Four abstract forms in a shared visual system" />
               <p><span>ACTIVE COORDINATE / {team.find((member) => member.id === activeMember)?.name}</span>{team.find((member) => member.id === activeMember)?.focus}</p>
             </div>
           </div>
@@ -271,7 +272,7 @@ export default function Home() {
 
         <section className="signal-section" aria-labelledby="signal-heading">
           <motion.div className="signal-image" initial={{ clipPath: prefersReducedMotion ? "inset(0 0 0 0)" : "inset(0 100% 0 0)" }} whileInView={{ clipPath: "inset(0 0 0 0)" }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 1.05, ease: [0.77, 0, 0.175, 1] }}>
-            <img src="/manus-storage/xy-signal-ribbon_df13d9c0.png" alt="A red ribbon moving through a dark field of coordinates" />
+            <img src={assetUrl("/manus-storage/xy-signal-ribbon_df13d9c0.png")} alt="A red ribbon moving through a dark field of coordinates" />
           </motion.div>
           <div className="signal-content">
             <span className="eyebrow light">THE NEXT SIGNAL</span>

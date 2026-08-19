@@ -4,6 +4,7 @@
  */
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "wouter";
+import { assetUrl } from "@/lib/assets";
 
 const navigation = [
   ["Collective", "/collective"],
@@ -17,7 +18,7 @@ export function PublicFrame({ children, label }: { children: React.ReactNode; la
     <div className="route-page">
       <header className="route-header">
         <Link href="/" className="brand-lockup" aria-label="XY COMBINATOR home">
-          <span className="brand-mark-shell" aria-hidden="true"><img src="/manus-storage/xy-combinator-brand-mark_8b6de4c4.png" alt="" className="brand-mark" /><i /></span>
+          <span className="brand-mark-shell" aria-hidden="true"><img src={assetUrl("/manus-storage/xy-combinator-brand-mark_8b6de4c4.png")} alt="" className="brand-mark" /><i /></span>
           <span className="brand-wordmark"><b>XY</b><b>COMBINATOR</b></span>
         </Link>
         <nav className="route-nav" aria-label="Main navigation">

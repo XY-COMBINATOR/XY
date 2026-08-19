@@ -1,8 +1,12 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { ENV } from "./env";
 
-export function registerStorageProxy(app: Express) {
-  app.get("/manus-storage/*splat", async (req, res) => {
+/**
+ * Register a storage redirect route. A separate API-prefixed route is used on
+ * Vercel because static root paths are served directly by its CDN, not Express.
+ */
+export function registerStorageProxy(app: Express, routePrefix = "/manus-storage") {
+  app.get(`${routePrefix}/*splat`, async (req: Request, res: Response) => {
     const rawKey = req.params.splat;
     const key = Array.isArray(rawKey) ? rawKey.join("/") : rawKey;
     if (!key) {

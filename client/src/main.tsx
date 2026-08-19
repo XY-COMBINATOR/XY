@@ -7,8 +7,17 @@ import superjson from "superjson";
 import App from "./App";
 import { startLogin } from "./const";
 import "./index.css";
+import { assetUrl } from "./lib/assets";
 
 const queryClient = new QueryClient();
+
+// Vercel can route artwork through its serverless storage proxy while local
+// and Manus previews keep the existing storage path without configuration.
+const favicon = document.querySelector<HTMLLinkElement>("link[rel='icon']");
+if (favicon) {
+  favicon.type = "image/png";
+  favicon.href = assetUrl("/manus-storage/xy-logo-mark_228db636.png");
+}
 
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;

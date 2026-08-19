@@ -30,3 +30,12 @@
 - [x] Assess and address frontend, backend, and data-layer bottlenecks for a 5,000-plus user audience.
 - [x] Implement code splitting, distributed throttling safeguards, and capacity-oriented database improvements.
 - [x] Verify the scaled architecture with tests, builds, and responsive checks.
+- [x] Commit and push the 5,000-plus user scaling changes to XY-COMBINATOR/XY using mantisdarling.
+- [x] Extract the API application for reusable serverless routing and preserve secure production middleware.
+- [x] Add Vercel configuration, a serverless API entry point, and deployment environment documentation.
+- [x] Verify the Vercel-ready build and document the final deployment settings.
+- [x] Route branded assets and the favicon through a Vercel-compatible configurable durable asset origin.
+- [x] Re-run Vercel-route verification for API paths, deep links, and branded assets.
+- [ ] Upload the supplied branded artwork to a durable public CDN and set `VITE_ASSET_ORIGIN` in Vercel.
+- [x] Replace the initial Vercel favicon request with a static deployable fallback before runtime asset configuration.
+- [x] Add automated verification for Vercel SPA rewrite exclusions and external branded asset URL composition.
