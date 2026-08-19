@@ -64,4 +64,4 @@
 - [x] Enforce no-store cache control for Vercel API routes at the CDN layer.
 - [x] Remove the concurrent contact-insert response race by avoiding a latest-record lookup after public writes.
 - [x] Review the production candidate at desktop and phone viewports after hardening changes.
-- [ ] Publish the remaining verified production-readiness and security updates to XY-COMBINATOR/XY main as mantisdarling.
+- [x] Publish the remaining verified production-readiness and security updates to XY-COMBINATOR/XY main as mantisdarling.
