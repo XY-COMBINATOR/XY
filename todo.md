@@ -45,3 +45,4 @@
 - [x] Add regression tests and verify the resilience update across routes, types, and the production build.
 - [x] Wire an authenticated dashboard route to show a data-aware skeleton while its serverless query is pending.
 - [x] Present clear retryable recovery feedback for global auth and query timeouts instead of console-only failure handling.
+- [ ] Publish all completed Vercel and resilience updates to XY-COMBINATOR/XY main as mantisdarling.
