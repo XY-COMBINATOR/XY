@@ -1,0 +1,1 @@
+CREATE INDEX `contactRateWindowsWindowEndsAtIndex` ON `contactRateWindows` (`windowEndsAt`);

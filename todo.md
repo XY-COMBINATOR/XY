@@ -26,4 +26,8 @@
 - [x] Audit the frontend, backend, authentication, validation, dependencies, and deployment settings for concrete security and reliability issues.
 - [x] Remediate verified security and code-quality findings with clear comments and regression tests.
 - [x] Re-run dependency, test, type-check, production-build, and responsive application verification.
-- [ ] Commit and push the security and reliability hardening update to XY-COMBINATOR/XY using mantisdarling.
+- [x] Commit and push the security and reliability hardening update to XY-COMBINATOR/XY using mantisdarling.
+- [x] Assess and address frontend, backend, and data-layer bottlenecks for a 5,000-plus user audience.
+- [x] Implement code splitting, distributed throttling safeguards, and capacity-oriented database improvements.
+- [x] Verify the scaled architecture with tests, builds, and responsive checks.
+- [ ] Commit and push the 5,000-plus user scaling changes to XY-COMBINATOR/XY using mantisdarling.

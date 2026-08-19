@@ -1,6 +1,6 @@
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, lt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { ContactRequest, InsertUser, NewContactRequest, contactRequests, users } from "../drizzle/schema";
+import { ContactRequest, InsertUser, NewContactRequest, contactRateWindows, contactRequests, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -115,4 +115,28 @@ export async function listContactRequests(limit: number): Promise<ContactRequest
   }
 
   return db.select().from(contactRequests).orderBy(desc(contactRequests.createdAt)).limit(limit);
+}
+
+/**
+ * Atomically increment a contact rate window. Returning null preserves the
+ * local guard fallback for development when a database connection is absent.
+ */
+export async function recordContactAttempt(sourceHash: string, now: Date, windowEndsAt: Date, limit: number): Promise<boolean | null> {
+  const db = await getDb();
+  if (!db) return null;
+
+  // Expired windows no longer contribute to throttling and are removed on the
+  // write path using an indexed timestamp, avoiding unbounded state growth.
+  await db.delete(contactRateWindows).where(lt(contactRateWindows.windowEndsAt, now));
+
+  await db.insert(contactRateWindows).values({ sourceHash, attempts: 1, windowEndsAt }).onDuplicateKeyUpdate({
+    set: {
+      attempts: sql`IF(${contactRateWindows.windowEndsAt} <= ${now}, 1, ${contactRateWindows.attempts} + 1)`,
+      windowEndsAt: sql`IF(${contactRateWindows.windowEndsAt} <= ${now}, ${windowEndsAt}, ${contactRateWindows.windowEndsAt})`,
+      updatedAt: now,
+    },
+  });
+
+  const result = await db.select({ attempts: contactRateWindows.attempts }).from(contactRateWindows).where(eq(contactRateWindows.sourceHash, sourceHash)).limit(1);
+  return (result[0]?.attempts ?? limit + 1) <= limit;
 }
