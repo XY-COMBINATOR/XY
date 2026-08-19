@@ -1,0 +1,6 @@
+- [x] Create distinctive branded visual assets for the hero and team experience.
+- [x] Build the responsive, award-style single-page narrative across desktop, tablet, and mobile breakpoints.
+- [x] Implement cinematic but restrained motion, including scroll reveals, hover physics, and touch-friendly interactions.
+- [x] Apply the visual refinement pass: authored codenames, reinforced monogram, and print-led orbit treatment.
+- [x] Verify the design, motion, navigation, and readable hierarchy at desktop and mobile viewport sizes.
+- [ ] Save a release checkpoint and deliver the finished project.
