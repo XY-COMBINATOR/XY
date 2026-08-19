@@ -15,3 +15,4 @@
 - [x] Add keyboard-friendly interactive discovery controls to the People and Capabilities pages.
 - [x] Strengthen contact submission validation and abuse protection with comments and focused tests.
 - [x] Verify the updated interactions and full project quality across desktop and phone layouts.
+- [ ] Commit and push the latest interactive and security refinement to XY-COMBINATOR/XY using mantisdarling.
