@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { appRouter } from "./routers";
+import { appRouter, contactInput } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
 /** A public caller is enough to test that validation rejects bad data before persistence. */
@@ -16,6 +16,12 @@ describe("contact.submit", () => {
     const caller = appRouter.createCaller(createPublicContext());
 
     await expect(caller.contact.submit({ name: "A", email: "not-an-email", message: "too short" })).rejects.toMatchObject({ code: "BAD_REQUEST" });
+  });
+
+  it("rejects contact forms that fill the hidden anti-bot field", () => {
+    const result = contactInput.safeParse({ name: "Mantis", email: "hello@example.com", message: "A legitimate project message that is long enough.", website: "bot.example" });
+
+    expect(result.success).toBe(false);
   });
 
   it("prevents non-admin callers from reading stored inquiries", async () => {

@@ -6,10 +6,12 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router } from "./_core/trpc";
 
-const contactInput = z.object({
+/** Public inquiry contract: strict limits and a hidden honeypot reject common bot payloads before storage. */
+export const contactInput = z.object({
   name: z.string().trim().min(2).max(80),
   email: z.string().trim().email().max(254),
   message: z.string().trim().min(20).max(2000),
+  website: z.string().max(0).optional().default(""),
 });
 
 function requestSource(request: { ip?: string; socket?: { remoteAddress?: string | undefined } }) {
@@ -33,7 +35,9 @@ export const appRouter = router({
   contact: router({
     submit: publicProcedure.input(contactInput).mutation(async ({ ctx, input }) => {
       guardInquiry(requestSource(ctx.req));
-      const savedRequest = await createContactRequest(input);
+      const { website, ...contactRequest } = input;
+      void website;
+      const savedRequest = await createContactRequest(contactRequest);
       return { id: savedRequest.id, accepted: true } as const;
     }),
     list: adminProcedure.input(z.object({ limit: z.number().int().min(1).max(50).default(25) })).query(({ input }) => listContactRequests(input.limit)),

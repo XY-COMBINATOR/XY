@@ -15,4 +15,10 @@
 - [x] Add keyboard-friendly interactive discovery controls to the People and Capabilities pages.
 - [x] Strengthen contact submission validation and abuse protection with comments and focused tests.
 - [x] Verify the updated interactions and full project quality across desktop and phone layouts.
-- [ ] Commit and push the latest interactive and security refinement to XY-COMBINATOR/XY using mantisdarling.
+- [x] Commit and push the latest interactive and security refinement to XY-COMBINATOR/XY using mantisdarling.
+- [x] Amend the latest GitHub commit author to mantisdarling and update the main branch.
+- [x] Add an interactive projects showcase with accessible project detail states.
+- [x] Add an editable achievements section that does not present unverified team claims as fact.
+- [x] Enrich the motion system while respecting reduced-motion preferences.
+- [x] Extend contact validation and abuse-guard test coverage.
+- [x] Verify the expanded experience across desktop and mobile layouts.

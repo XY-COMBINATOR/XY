@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
+import { ProjectsArchive } from "@/components/ProjectsArchive";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -110,6 +111,7 @@ export default function Home() {
         <nav className="desktop-nav" aria-label="Primary navigation">
           <Link href="/collective">Collective</Link>
           <Link href="/people">People</Link>
+          <ScrollLink href="#projects">Projects</ScrollLink>
           <Link href="/capabilities">Capabilities</Link>
         </nav>
 
@@ -130,6 +132,7 @@ export default function Home() {
         {[
           ["About", "#about"],
           ["People", "#team"],
+          ["Projects", "#projects"],
           ["Capabilities", "#capabilities"],
         ].map(([label, href]) => (
           <ScrollLink key={label} href={href} className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
@@ -244,6 +247,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <ProjectsArchive />
 
         <section id="capabilities" className="capabilities section-pad" aria-labelledby="capabilities-heading">
           <div className="capabilities-intro">

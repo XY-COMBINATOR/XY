@@ -13,6 +13,7 @@ export default function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
   const submit = trpc.contact.submit.useMutation({
     onSuccess: () => { setStatus("sent"); setName(""); setEmail(""); setMessage(""); },
@@ -22,7 +23,7 @@ export default function Contact() {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("idle");
-    submit.mutate({ name, email, message });
+    submit.mutate({ name, email, message, website });
   }
 
   return (
@@ -33,6 +34,7 @@ export default function Contact() {
           <label>Your name<input value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={80} required autoComplete="name" /></label>
           <label>Email address<input value={email} onChange={(event) => setEmail(event.target.value)} type="email" maxLength={254} required autoComplete="email" /></label>
           <label>What should we know?<textarea value={message} onChange={(event) => setMessage(event.target.value)} minLength={20} maxLength={2000} required /></label>
+          <label className="honeypot" aria-hidden="true">Website<input value={website} onChange={(event) => setWebsite(event.target.value)} tabIndex={-1} autoComplete="off" /></label>
           <button type="submit" disabled={submit.isPending}>{submit.isPending ? <><LoaderCircle size={18} className="spin" /> Sending</> : <>Send the signal <ArrowUpRight size={18} /></>}</button>
           {status === "sent" && <p className="form-state success"><Check size={17} /> Received. We will be in touch.</p>}
           {status === "error" && <p className="form-state error">We could not send that yet. Check the details and try again.</p>}
