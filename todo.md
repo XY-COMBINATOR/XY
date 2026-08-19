@@ -22,3 +22,4 @@
 - [x] Enrich the motion system while respecting reduced-motion preferences.
 - [x] Extend contact validation and abuse-guard test coverage.
 - [x] Verify the expanded experience across desktop and mobile layouts.
+- [ ] Commit and push the Projects, Achievements, motion, and validation expansion to XY-COMBINATOR/XY using mantisdarling.
