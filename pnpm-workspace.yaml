@@ -1,0 +1,11 @@
+packages:
+  - .
+
+patchedDependencies:
+  wouter@3.7.1: patches/wouter@3.7.1.patch
+
+overrides:
+  "@babel/core": 7.29.7
+  esbuild: 0.28.2
+  "nanoid@^3.3.0": 3.3.18
+  tar: 7.5.22

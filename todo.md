@@ -64,3 +64,15 @@
 - [x] Enforce no-store cache control for Vercel API routes at the CDN layer.
 - [x] Remove the concurrent contact-insert response race by avoiding a latest-record lookup after public writes.
 - [x] Review the production candidate at desktop and phone viewports after hardening changes.
+- [x] Publish the remaining verified production-readiness and security updates to XY-COMBINATOR/XY main as mantisdarling.
+- [x] Review existing GitHub automation, coverage tooling, dependency controls, and repository security posture.
+- [x] Add GitHub CI checks for install, formatting, types, tests, production build, dependency audit, and coverage reporting.
+- [x] Run a comprehensive dependency, code, secret, configuration, and security-control audit and remediate actionable findings.
+- [x] Verify the new CI commands locally and document the security-audit and coverage-report workflow.
+- [x] Add Vitest V8 coverage reporting and a reproducible changed-file formatting check.
+- [x] Add GitHub Actions quality, dependency-review, and CodeQL workflows with minimal permissions.
+- [x] Add Dependabot maintenance configuration and enable available GitHub repository security features.
+- [x] Upgrade the audited Vite and Vitest development toolchain to compatible secure current versions, then re-verify the application.
+- [x] Move ignored package-manager patch and override settings into supported workspace configuration and apply audited transitive dependency patches.
+- [x] Make the CI changed-file formatting gate resilient when a GitHub event has no usable comparison base.
+- [x] Include untracked files in the local changed-file formatting gate so new workflows and scripts are checked before commit.

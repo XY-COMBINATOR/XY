@@ -13,6 +13,11 @@ export default defineConfig({
     },
   },
   test: {
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json-summary", "lcov"],
+      reportsDirectory: "coverage",
+    },
     environment: "node",
     include: ["server/**/*.test.ts", "server/**/*.spec.ts"],
   },
