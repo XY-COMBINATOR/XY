@@ -13,20 +13,20 @@ The repository now contains a Vite static frontend and a Vercel catch-all API fu
 
 Add the following values in **Vercel → Project Settings → Environment Variables** for both Preview and Production. Do not commit any secret values.
 
-| Variable            | Purpose                                                                                 |
-| ------------------- | --------------------------------------------------------------------------------------- |
-| `DATABASE_URL`      | Production MySQL or TiDB database connection string.                                    |
-| `JWT_SECRET`        | High-entropy session-signing secret with at least 32 characters. Generate a new value.  |
-| `VITE_APP_ID`       | OAuth application identifier.                                                           |
-| `OAUTH_SERVER_URL`  | OAuth service base URL.                                                                 |
-| `OWNER_OPEN_ID`     | Owner identity used for the initial administrator role.                                 |
-| `VITE_ASSET_ORIGIN` | Optional preferred CDN origin. The public `gh-pages` artwork branch is used by default. |
+| Variable                        | Purpose                                                                                       |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                  | Production MySQL or TiDB database connection string.                                          |
+| `JWT_SECRET`                    | High-entropy session-signing secret with at least 32 characters. Generate a new value.        |
+| `VITE_SUPABASE_URL`             | Public Supabase project URL used for invite-only team sign-in.                                |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Public Supabase publishable key used by the browser sign-in client.                           |
+| `TEAMADMINEMAIL`                | Optional designated administrator email; the matching invited member receives the admin role. |
+| `VITE_ASSET_ORIGIN`             | Optional preferred CDN origin. The public `gh-pages` artwork branch is used by default.       |
 
 ## Before going live
 
-Update the OAuth provider callback allowlist to include `https://YOUR-VERCEL-DOMAIN/api/oauth/callback`. The supplied artwork is hosted publicly on the repository `gh-pages` branch and loads through the raw GitHub asset origin by default. You may set `VITE_ASSET_ORIGIN` to a preferred CDN that preserves the same `/manus-storage/*` paths. A bundled geometric favicon provides a first-load fallback, then the supplied PNG logo replaces it at runtime. The contact route uses the database migration files under `drizzle/`; ensure the production database contains `contactRequests` and `contactRateWindows` before accepting enquiries.
+In Supabase Authentication, set the Site URL and allowed Redirect URL to the exact Vercel production URL. Keep email sign-up disabled and invite members from the Supabase dashboard. The supplied artwork is hosted publicly on the repository `gh-pages` branch and loads through the raw GitHub asset origin by default. You may set `VITE_ASSET_ORIGIN` to a preferred CDN that preserves the same `/manus-storage/*` paths. A bundled geometric favicon provides a first-load fallback, then the supplied PNG logo replaces it at runtime. The contact route uses the database migration files under `drizzle/`; ensure the production database contains `contactRequests` and `contactRateWindows` before accepting enquiries.
 
-> The static website can deploy without secrets, but the contact form and sign-in flow require the backend environment variables and OAuth callback configuration above.
+> The static website can deploy without its backend configuration, but the contact form and invite-only team sign-in flow require the database, Supabase public values, and allowed redirect URL above.
 
 ## Production guardrails
 
@@ -39,4 +39,4 @@ Update the OAuth provider callback allowlist to include `https://YOUR-VERCEL-DOM
 
 ## Final launch check
 
-Confirm that the database migrations have been applied, the OAuth callback allowlist contains the exact Vercel production URL, and all required environment variables are configured in the Production environment. Deploy from `main`, then verify the home page, a deep link such as `/people`, the contact form, sign-in, and sign-out against the deployed domain. Review Vercel runtime logs after the first real submissions and keep dependency updates and vulnerability audits in the release process.
+Confirm that the database migrations have been applied, Supabase permits the exact Vercel production URL, and all required environment variables are configured in the Production environment. Deploy from `main`, then verify the home page, a deep link such as `/people`, the contact form, team sign-in, and sign-out against the deployed domain. Review Vercel runtime logs after the first real submissions and keep dependency updates and vulnerability audits in the release process.

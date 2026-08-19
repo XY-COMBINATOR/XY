@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { validateProductionEnvironment } from "./_core/env";
 import { getSessionSameSite } from "./_core/cookies";
-import { canUseBearerSessionFallback } from "./_core/sdk";
 import { applySecurityHeaders } from "./security";
+import { isTeamAdmin } from "./supabaseAuth";
 
 function createResponse() {
   const values = new Map<string, string>();
@@ -64,8 +64,7 @@ describe("production security configuration", () => {
         cookieSecret: "short",
         databaseUrl: "database",
         isProduction: true,
-        oAuthServerUrl: "https://oauth.example.com",
-        ownerOpenId: "owner",
+        supabaseUrl: "https://project.supabase.co",
       })
     ).toThrow("JWT_SECRET must contain at least 32 characters");
 
@@ -75,8 +74,7 @@ describe("production security configuration", () => {
         cookieSecret: "a-secure-production-secret-with-32-plus-characters",
         databaseUrl: "",
         isProduction: true,
-        oAuthServerUrl: "",
-        ownerOpenId: "",
+        supabaseUrl: "",
       })
     ).toThrow("Missing required production environment variables");
   });
@@ -84,7 +82,10 @@ describe("production security configuration", () => {
   it("uses safer production session defaults", () => {
     expect(getSessionSameSite(true)).toBe("lax");
     expect(getSessionSameSite(false)).toBe("none");
-    expect(canUseBearerSessionFallback(true)).toBe(false);
-    expect(canUseBearerSessionFallback(false)).toBe(true);
+  });
+
+  it("assigns the administrator role only to the configured email", () => {
+    expect(isTeamAdmin("leader@example.com", "leader@example.com")).toBe(true);
+    expect(isTeamAdmin("member@example.com", "leader@example.com")).toBe(false);
   });
 });

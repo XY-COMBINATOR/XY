@@ -78,3 +78,5 @@
 - [x] Include untracked files in the local changed-file formatting gate so new workflows and scripts are checked before commit.
 - [x] Publish the CI, coverage, and security automation release to XY-COMBINATOR/XY main as mantisdarling.
 - [x] Fix the Quality workflow package-manager bootstrap so pnpm caching can run successfully on GitHub Actions.
+- [x] Replace the Manus-only sign-in dependency with a secure Vercel-compatible team authentication provider and role-based access for four members.
+- [ ] Publish and verify the Supabase invite-only team sign-in flow on Vercel, including the designated administrator email and an accepted member invitation.
