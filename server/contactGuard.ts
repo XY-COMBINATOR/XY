@@ -1,4 +1,6 @@
+import { createHash } from "node:crypto";
 import { TRPCError } from "@trpc/server";
+import { recordContactAttempt } from "./db";
 
 type GuardRecord = { attempts: number; expiresAt: number };
 type GuardOptions = { limit?: number; windowMs?: number; maxEntries?: number };
@@ -38,3 +40,28 @@ export function createInquiryGuard(options: GuardOptions = {}) {
 
 /** Shared production guard. Gateway-level protections still cover multi-instance traffic. */
 export const guardInquiry = createInquiryGuard();
+
+/** Create a stable, privacy-preserving database key for a request source. */
+export function hashInquirySource(source: string) {
+  return createHash("sha256").update(source).digest("hex");
+}
+
+/**
+ * Use shared database state in production so contact throttling remains intact
+ * across autoscaled instances. Local development retains the bounded guard when
+ * a database connection has not been configured.
+ */
+export async function guardInquiryDistributed(source: string) {
+  const now = new Date();
+  const windowEndsAt = new Date(now.getTime() + 15 * 60 * 1000);
+  const accepted = await recordContactAttempt(hashInquirySource(source), now, windowEndsAt, 4);
+
+  if (accepted === null) {
+    guardInquiry(source);
+    return;
+  }
+
+  if (!accepted) {
+    throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Please wait before sending another enquiry." });
+  }
+}

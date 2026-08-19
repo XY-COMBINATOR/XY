@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { index, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -39,3 +39,17 @@ export const contactRequests = mysqlTable("contactRequests", {
 
 export type ContactRequest = typeof contactRequests.$inferSelect;
 export type NewContactRequest = typeof contactRequests.$inferInsert;
+
+/**
+ * Shared throttle state keeps public contact limits consistent when autoscaling
+ * serves requests from more than one application instance. Source addresses are
+ * represented only by a SHA-256 hash to avoid persisting raw network data.
+ */
+export const contactRateWindows = mysqlTable("contactRateWindows", {
+  sourceHash: varchar("sourceHash", { length: 64 }).primaryKey(),
+  attempts: int("attempts").notNull().default(0),
+  windowEndsAt: timestamp("windowEndsAt").notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, table => [index("contactRateWindowsWindowEndsAtIndex").on(table.windowEndsAt)]);
+
+export type ContactRateWindow = typeof contactRateWindows.$inferSelect;

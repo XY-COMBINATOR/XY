@@ -1,7 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
 import { z } from "zod";
 import { createContactRequest, listContactRequests } from "./db";
-import { guardInquiry } from "./contactGuard";
+import { guardInquiryDistributed } from "./contactGuard";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router } from "./_core/trpc";
@@ -34,7 +34,7 @@ export const appRouter = router({
   }),
   contact: router({
     submit: publicProcedure.input(contactInput).mutation(async ({ ctx, input }) => {
-      guardInquiry(requestSource(ctx.req));
+      await guardInquiryDistributed(requestSource(ctx.req));
       const { website, ...contactRequest } = input;
       void website;
       const savedRequest = await createContactRequest(contactRequest);
