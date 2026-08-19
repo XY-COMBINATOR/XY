@@ -4,6 +4,7 @@
  */
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { Link } from "wouter";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -102,14 +103,14 @@ export default function Home() {
       <div className="grain" aria-hidden="true" />
       <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
         <ScrollLink href="#top" className="brand-lockup" aria-label="XY COMBINATOR home">
-          <span className="brand-mark-shell" aria-hidden="true"><img src="/manus-storage/xy-logo-mark_228db636.png" alt="" className="brand-mark" /><i /></span>
+          <span className="brand-mark-shell" aria-hidden="true"><img src="/manus-storage/xy-combinator-brand-mark_8b6de4c4.png" alt="" className="brand-mark" /><i /></span>
           <span className="brand-wordmark"><b>XY</b><b>COMBINATOR</b></span>
         </ScrollLink>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <ScrollLink href="#about">About</ScrollLink>
-          <ScrollLink href="#team">People</ScrollLink>
-          <ScrollLink href="#capabilities">Capabilities</ScrollLink>
+          <Link href="/collective">Collective</Link>
+          <Link href="/people">People</Link>
+          <Link href="/capabilities">Capabilities</Link>
         </nav>
 
         <div className="header-actions">
@@ -155,14 +156,14 @@ export default function Home() {
             </h1>
             <motion.div variants={rise} className="hero-bottom-line">
               <p>We combine four perspectives to make work that moves culture and business forward.</p>
-              <ScrollLink href="#about" className="circle-arrow" aria-label="Explore XY COMBINATOR">
+              <Link href="/collective" className="circle-arrow" aria-label="Explore XY COMBINATOR">
                 <ArrowDownRight size={25} />
-              </ScrollLink>
+              </Link>
             </motion.div>
           </motion.div>
 
           <motion.div className="hero-orbit-wrap" initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.15, ease: [0.23, 1, 0.32, 1] }}>
-            <img src="/manus-storage/xy-hero-orbit_d50e0d8d.png" alt="Abstract XY axis orbit with red and chrome spheres" className="hero-orbit" />
+            <img src="/manus-storage/xy-combinator-brand-mark_8b6de4c4.png" alt="XY COMBINATOR original red and black team artwork" className="hero-orbit" />
             <span className="orbit-caption top">X / 41.19</span>
             <span className="orbit-caption bottom">Y / 02.04</span>
             <span className="orbit-pulse" aria-hidden="true" />
@@ -189,7 +190,7 @@ export default function Home() {
               <motion.div className="about-copy" variants={rise}>
                 <p>XY COMBINATOR is a four-person practice where design, technology, strategy, and visual culture meet in the same room.</p>
                 <p>We work with the friction between disciplines—because the unexpected combinations are usually where the interesting things begin.</p>
-                <ScrollLink href="#team" className="text-link">Meet the constellation <ArrowDownRight size={18} /></ScrollLink>
+                <Link href="/collective" className="text-link">Read our point of view <ArrowDownRight size={18} /></Link>
               </motion.div>
             </motion.div>
             <motion.figure className="about-art" initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 35 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0.25 }} transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}>
@@ -205,7 +206,7 @@ export default function Home() {
               <span>03</span><Minus size={16} /><span>THE FOUR</span>
             </motion.div>
             <motion.h2 id="team-heading" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={rise}>ONE TEAM.<br /><i>FOUR FORCES.</i></motion.h2>
-            <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={rise}>Four codenames, four instincts. Choose a coordinate and feel the mix change.</motion.p>
+            <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={rise}>Four codenames, four instincts. Visit People to see the mix change.</motion.p>
           </div>
 
           <div className="team-panel">
@@ -270,7 +271,7 @@ export default function Home() {
           <div className="signal-content">
             <span className="eyebrow light">THE NEXT SIGNAL</span>
             <h2 id="signal-heading">Have a complex thing to make clear?</h2>
-            <a className="signal-cta" href="mailto:hello@xycombinator.com">Start the conversation <ArrowUpRight size={21} /></a>
+            <Link className="signal-cta" href="/contact">Start the conversation <ArrowUpRight size={21} /></Link>
           </div>
         </section>
       </main>
