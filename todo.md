@@ -76,3 +76,4 @@
 - [x] Move ignored package-manager patch and override settings into supported workspace configuration and apply audited transitive dependency patches.
 - [x] Make the CI changed-file formatting gate resilient when a GitHub event has no usable comparison base.
 - [x] Include untracked files in the local changed-file formatting gate so new workflows and scripts are checked before commit.
+- [ ] Publish the CI, coverage, and security automation release to XY-COMBINATOR/XY main as mantisdarling.
