@@ -14,13 +14,16 @@ export const contactInput = z.object({
   website: z.string().max(0).optional().default(""),
 });
 
-function requestSource(request: { ip?: string; socket?: { remoteAddress?: string | undefined } }) {
+function requestSource(request: {
+  ip?: string;
+  socket?: { remoteAddress?: string | undefined };
+}) {
   const candidate = request.ip || request.socket?.remoteAddress || "unknown";
   return candidate.trim().slice(0, 120) || "unknown";
 }
 
 export const appRouter = router({
-    // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
+  // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
@@ -33,14 +36,18 @@ export const appRouter = router({
     }),
   }),
   contact: router({
-    submit: publicProcedure.input(contactInput).mutation(async ({ ctx, input }) => {
-      await guardInquiryDistributed(requestSource(ctx.req));
-      const { website, ...contactRequest } = input;
-      void website;
-      const savedRequest = await createContactRequest(contactRequest);
-      return { id: savedRequest.id, accepted: true } as const;
-    }),
-    list: adminProcedure.input(z.object({ limit: z.number().int().min(1).max(50).default(25) })).query(({ input }) => listContactRequests(input.limit)),
+    submit: publicProcedure
+      .input(contactInput)
+      .mutation(async ({ ctx, input }) => {
+        await guardInquiryDistributed(requestSource(ctx.req));
+        const { website, ...contactRequest } = input;
+        void website;
+        await createContactRequest(contactRequest);
+        return { accepted: true } as const;
+      }),
+    list: adminProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(50).default(25) }))
+      .query(({ input }) => listContactRequests(input.limit)),
   }),
 });
 
