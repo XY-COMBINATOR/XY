@@ -1,7 +1,7 @@
 import { COOKIE_NAME } from "@shared/const";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createContactRequest, listContactRequests } from "./db";
+import { guardInquiry } from "./contactGuard";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router } from "./_core/trpc";
@@ -12,31 +12,9 @@ const contactInput = z.object({
   message: z.string().trim().min(20).max(2000),
 });
 
-type GuardRecord = { attempts: number; expiresAt: number };
-const inquiryGuard = new Map<string, GuardRecord>();
-const inquiryWindowMs = 15 * 60 * 1000;
-const inquiryLimit = 4;
-
-/**
- * Apply a small, in-memory throttle before storage. This limits accidental or
- * abusive form submissions in a single runtime; upstream gateway controls
- * continue to protect distributed traffic.
- */
-function guardInquiry(source: string) {
-  const now = Date.now();
-  const current = inquiryGuard.get(source);
-  const record = !current || current.expiresAt <= now ? { attempts: 0, expiresAt: now + inquiryWindowMs } : current;
-
-  if (record.attempts >= inquiryLimit) {
-    throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Please wait before sending another enquiry." });
-  }
-
-  record.attempts += 1;
-  inquiryGuard.set(source, record);
-}
-
 function requestSource(request: { ip?: string; socket?: { remoteAddress?: string | undefined } }) {
-  return request.ip || request.socket?.remoteAddress || "unknown";
+  const candidate = request.ip || request.socket?.remoteAddress || "unknown";
+  return candidate.trim().slice(0, 120) || "unknown";
 }
 
 export const appRouter = router({

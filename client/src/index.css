@@ -191,4 +191,28 @@ img { display: block; max-width: 100%; }
   .route-footer { padding: 1.15rem 1rem; font-size: .48rem; }
 }
 
+/* Interactive route controls remain ordinary buttons, so mouse, touch, and keyboard use share one state model. */
+.coordinate-card { border: 0; color: inherit; text-align: left; cursor: pointer; }
+.coordinate-card.is-active .coordinate-symbol { transform: rotate(20deg) scale(1.08); }
+.coordinate-card.is-active .coordinate-copy { display: none; }
+.coordinate-reader { display: grid; grid-template-columns: minmax(150px, .45fr) 1fr 1fr; gap: 1.5rem; align-items: start; padding: 1.2rem 0; border-bottom: 1px solid rgba(243,239,233,.22); }
+.coordinate-reader p { margin: 0; color: var(--xy-red); font: 500 .57rem/1.4 "DM Mono", monospace; letter-spacing: .07em; }
+.coordinate-reader h2 { margin: 0; font: 500 1.08rem/1 "DM Mono", monospace; letter-spacing: .04em; }
+.coordinate-reader span { color: rgba(243,239,233,.7); font-size: .78rem; line-height: 1.5; }
+.capability-choice { position: relative; min-height: 245px; padding: 1.4rem; border: 0; color: var(--xy-ink); text-align: left; background: var(--xy-paper); cursor: pointer; transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out); }
+.capability-choice:hover, .capability-choice.is-active { background: var(--xy-ink); color: var(--xy-paper); }
+.capability-choice > span, .capability-choice > em { font: 500 .58rem/1 "DM Mono", monospace; letter-spacing: .07em; }
+.capability-choice > span { color: var(--xy-red); }
+.capability-choice > em { position: absolute; top: 1.4rem; right: 1.4rem; color: currentColor; font-style: normal; opacity: .55; }
+.capability-choice h2 { margin: 4.1rem 0 .8rem; font: 600 clamp(1.7rem, 3vw, 3rem)/.88 "Space Grotesk", sans-serif; letter-spacing: -.07em; }
+.capability-choice p { max-width: 310px; margin: 0; color: rgba(17,17,17,.68); font-size: .78rem; line-height: 1.6; }
+.capability-choice.is-active p { color: rgba(243,239,233,.75); }
+.capability-extra { max-height: 0; max-width: 330px; overflow: hidden; color: rgba(243,239,233,.65); font-size: .7rem; line-height: 1.55; transition: max-height 280ms var(--ease-out), margin-top 280ms var(--ease-out); }
+.capability-choice.is-active .capability-extra { max-height: 75px; margin-top: 1rem; }
+@media (max-width: 620px) {
+  .coordinate-reader { grid-template-columns: 1fr; gap: .6rem; padding-top: 1.4rem; }
+  .capability-choice { min-height: 195px; }
+  .capability-choice h2 { margin-top: 3rem; font-size: 2.1rem; }
+}
+
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }

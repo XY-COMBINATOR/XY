@@ -10,5 +10,8 @@
 - [x] Add purposeful code comments and avoid underscore-based names in new custom implementation.
 - [x] Verify build quality, routed navigation, responsive layouts, and practical security controls.
 - [x] Diagnose and repair all compilation, test, and development-server errors after the full-stack upgrade.
-- [ ] Validate access to the XY-COMBINATOR/XY GitHub repository and publish the current source.
-- [ ] Confirm the repository push and provide the Vercel deployment handoff steps.
+- [x] Validate access to the XY-COMBINATOR/XY GitHub repository and publish the current source.
+- [x] Confirm the repository push and provide the Vercel deployment handoff steps.
+- [x] Add keyboard-friendly interactive discovery controls to the People and Capabilities pages.
+- [x] Strengthen contact submission validation and abuse protection with comments and focused tests.
+- [x] Verify the updated interactions and full project quality across desktop and phone layouts.
