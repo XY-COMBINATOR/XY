@@ -32,8 +32,12 @@ describe("dashboard network awareness", () => {
     let onlineEvents = 0;
     const stopWatching = watchNetworkStatus(
       target as unknown as Window,
-      () => { offlineEvents += 1; },
-      () => { onlineEvents += 1; }
+      () => {
+        offlineEvents += 1;
+      },
+      () => {
+        onlineEvents += 1;
+      }
     );
 
     target.dispatchEvent(new Event("offline"));
