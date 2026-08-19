@@ -45,3 +45,9 @@
 - [x] Add regression tests and verify the resilience update across routes, types, and the production build.
 - [x] Wire an authenticated dashboard route to show a data-aware skeleton while its serverless query is pending.
 - [x] Present clear retryable recovery feedback for global auth and query timeouts instead of console-only failure handling.
+- [x] Publish all completed Vercel and resilience updates to XY-COMBINATOR/XY main as mantisdarling.
+- [x] Add an accessible dashboard offline indicator that reacts immediately to browser network changes.
+- [x] Add regression coverage and verify the dashboard offline indicator across responsive production builds.
+- [x] Verify the offline indicator at a phone viewport.
+- [x] Add focused browser-event coverage for offline activation and online clearing behavior.
+- [x] Capture active offline-indicator verification at desktop and phone viewports.

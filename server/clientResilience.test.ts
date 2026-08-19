@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { apiFailureMessage, isApiTimeout } from "../client/src/lib/apiFailure";
+import { isNetworkOffline, watchNetworkStatus } from "../client/src/lib/networkStatus";
 
 const projectPath = path.resolve(import.meta.dirname, "..");
 
@@ -15,6 +16,33 @@ describe("client API recovery messaging", () => {
 
   it("offers a connection recovery message for other request failures", () => {
     expect(apiFailureMessage(new Error("Internal Server Error"))).toContain("Check your connection");
+  });
+});
+
+describe("dashboard network awareness", () => {
+  it("reports the initial browser network status", () => {
+    expect(isNetworkOffline({ onLine: false })).toBe(true);
+    expect(isNetworkOffline({ onLine: true })).toBe(false);
+    expect(isNetworkOffline(undefined)).toBe(false);
+  });
+
+  it("activates on offline and clears on online browser events", () => {
+    const target = new EventTarget();
+    let offlineEvents = 0;
+    let onlineEvents = 0;
+    const stopWatching = watchNetworkStatus(
+      target as unknown as Window,
+      () => { offlineEvents += 1; },
+      () => { onlineEvents += 1; }
+    );
+
+    target.dispatchEvent(new Event("offline"));
+    target.dispatchEvent(new Event("online"));
+    stopWatching();
+    target.dispatchEvent(new Event("offline"));
+
+    expect(offlineEvents).toBe(1);
+    expect(onlineEvents).toBe(1);
   });
 });
 
@@ -48,11 +76,19 @@ describe("client resilience views", () => {
       path.join(projectPath, "client/src/components/ApiRecoveryNotice.tsx"),
       "utf8"
     );
+    const offlineIndicatorSource = await readFile(
+      path.join(projectPath, "client/src/components/DashboardOfflineIndicator.tsx"),
+      "utf8"
+    );
 
     expect(contactSource).toContain("handleRetry");
     expect(boundarySource).toContain("Try again");
     expect(notFoundSource).toContain("COORDINATE NOT FOUND");
     expect(dashboardSource).toContain("DashboardLayout");
+    expect(dashboardSource).toContain("DashboardOfflineIndicator");
     expect(apiNoticeSource).toContain("resetQueries");
+    expect(offlineIndicatorSource).toContain("watchNetworkStatus");
+    expect(offlineIndicatorSource).toContain("offlinePreview");
+    expect(offlineIndicatorSource).toContain('role="alert"');
   });
 });

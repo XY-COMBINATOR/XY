@@ -1,4 +1,4 @@
-import { QueryClient, type QueryClientConfig } from "@tanstack/react-query";
+import type { QueryClient } from "@tanstack/react-query";
 import { RotateCcw, WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiFailureMessage } from "@/lib/apiFailure";

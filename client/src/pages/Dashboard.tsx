@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
+import { DashboardOfflineIndicator } from "@/components/DashboardOfflineIndicator";
 import { useAuth } from "@/_core/hooks/useAuth";
 
 /**
@@ -11,6 +12,7 @@ function DashboardContent() {
 
   return (
     <section className="dashboard-overview">
+      <DashboardOfflineIndicator />
       <p>CONTROL ROOM / MEMBER VIEW</p>
       <h1>WELCOME BACK,<br /><i>{user?.name || "COLLECTIVE"}.</i></h1>
       <div className="dashboard-overview-grid">
