@@ -276,6 +276,11 @@ class SDKServer {
       throw ForbiddenError("Invalid session cookie");
     }
 
+    // A valid signature is not enough: sessions must also be scoped to this app.
+    if (session.appId !== ENV.appId) {
+      throw ForbiddenError("Session was issued for another application");
+    }
+
     if (session.openId.startsWith(CRON_OPEN_ID_PREFIX)) {
       const userInfo = await this.getUserInfoWithJwt(sessionToken ?? "");
       const taskUid = userInfo.taskUid ?? null;
