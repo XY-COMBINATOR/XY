@@ -77,3 +77,4 @@
 - [x] Make the CI changed-file formatting gate resilient when a GitHub event has no usable comparison base.
 - [x] Include untracked files in the local changed-file formatting gate so new workflows and scripts are checked before commit.
 - [x] Publish the CI, coverage, and security automation release to XY-COMBINATOR/XY main as mantisdarling.
+- [ ] Fix the Quality workflow package-manager bootstrap so pnpm caching can run successfully on GitHub Actions.
