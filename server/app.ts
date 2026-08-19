@@ -5,7 +5,23 @@ import { appRouter } from "./routers";
 import { createContext } from "./_core/context";
 import { registerOAuthRoutes } from "./_core/oauth";
 import { registerStorageProxy } from "./_core/storageProxy";
+import { validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
+
+function requestBodyError(error: unknown) {
+  if (!error || typeof error !== "object") return null;
+
+  const candidate = error as { status?: unknown; type?: unknown };
+  if (candidate.type === "entity.too.large" || candidate.status === 413) {
+    return { message: "Request body is too large", status: 413 };
+  }
+
+  if (error instanceof SyntaxError && candidate.status === 400) {
+    return { message: "Request body contains invalid JSON", status: 400 };
+  }
+
+  return null;
+}
 
 /**
  * Build only the API portion of the service. Keeping this free of listeners and
@@ -13,6 +29,7 @@ import { applySecurityHeaders } from "./security";
  * the same validated routes, authentication, throttling, and error handling.
  */
 export function createApiApp() {
+  validateProductionEnvironment();
   const app = express();
   app.set("trust proxy", 1);
   app.disable("x-powered-by");
@@ -21,15 +38,32 @@ export function createApiApp() {
   app.use(express.urlencoded({ limit: "32kb", extended: false }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
-  app.use("/api/trpc", createExpressMiddleware({ router: appRouter, createContext }));
+  app.use(
+    "/api/trpc",
+    createExpressMiddleware({ router: appRouter, createContext })
+  );
 
   // Express does not automatically reset a serverless invocation after errors.
   // This final handler provides a concise response without leaking internals.
-  app.use((error: unknown, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
-    console.error("[API] Unhandled request error", error);
-    if (response.headersSent) return;
-    response.status(500).json({ error: "Internal server error" });
-  });
+  app.use(
+    (
+      error: unknown,
+      _request: express.Request,
+      response: express.Response,
+      _next: express.NextFunction
+    ) => {
+      const bodyError = requestBodyError(error);
+      if (response.headersSent) return;
+
+      if (bodyError) {
+        response.status(bodyError.status).json({ error: bodyError.message });
+        return;
+      }
+
+      console.error("[API] Unhandled request error", error);
+      response.status(500).json({ error: "Internal server error" });
+    }
+  );
 
   return app;
 }

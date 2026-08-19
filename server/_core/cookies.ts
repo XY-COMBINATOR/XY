@@ -1,4 +1,5 @@
 import type { CookieOptions, Request } from "express";
+import { ENV } from "./env";
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -19,6 +20,10 @@ function isSecureRequest(req: Request) {
     : forwardedProto.split(",");
 
   return protoList.some(proto => proto.trim().toLowerCase() === "https");
+}
+
+export function getSessionSameSite(isProduction = ENV.isProduction) {
+  return isProduction ? "lax" : "none";
 }
 
 export function getSessionCookieOptions(
@@ -42,7 +47,7 @@ export function getSessionCookieOptions(
   return {
     httpOnly: true,
     path: "/",
-    sameSite: "none",
+    sameSite: getSessionSameSite(),
     secure: isSecureRequest(req),
   };
 }

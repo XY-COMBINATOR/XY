@@ -51,3 +51,16 @@
 - [x] Verify the offline indicator at a phone viewport.
 - [x] Add focused browser-event coverage for offline activation and online clearing behavior.
 - [x] Capture active offline-indicator verification at desktop and phone viewports.
+- [x] Inventory production configuration, dependencies, routes, and existing security controls.
+- [x] Audit authentication, API validation, rate limiting, headers, data access, routing, assets, and client recovery for concrete production risks.
+- [x] Remediate verified production-readiness and security findings with focused regression tests.
+- [x] Run dependency, test, type, build, route, and responsive production-candidate verification for the changed release surface.
+- [x] Publish a concise production launch checklist with remaining operator-owned configuration steps.
+- [x] Require complete, strong production server configuration before API startup.
+- [x] Restrict bearer-token session fallback to non-production previews and shorten long-lived browser sessions.
+- [x] Strengthen production browser security headers and session cookie cross-site policy.
+- [x] Apply the production security header baseline to static Vercel routes as well as serverless API responses.
+- [x] Return safe client errors for malformed or oversized API request bodies instead of generic server errors.
+- [x] Enforce no-store cache control for Vercel API routes at the CDN layer.
+- [x] Remove the concurrent contact-insert response race by avoiding a latest-record lookup after public writes.
+- [x] Review the production candidate at desktop and phone viewports after hardening changes.

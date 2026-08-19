@@ -1,7 +1,14 @@
 import { desc, eq, lt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { ContactRequest, InsertUser, NewContactRequest, contactRateWindows, contactRequests, users } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import {
+  ContactRequest,
+  InsertUser,
+  NewContactRequest,
+  contactRateWindows,
+  contactRequests,
+  users,
+} from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -15,6 +22,7 @@ export async function getDb() {
       _db = null;
     }
   }
+
   return _db;
 }
 
@@ -34,7 +42,6 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       openId: user.openId,
     };
     const updateSet: Record<string, unknown> = {};
-
     const textFields = ["name", "email", "loginMethod"] as const;
     type TextField = (typeof textFields)[number];
 
@@ -52,12 +59,13 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.lastSignedIn = user.lastSignedIn;
       updateSet.lastSignedIn = user.lastSignedIn;
     }
+
     if (user.role !== undefined) {
       values.role = user.role;
       updateSet.role = user.role;
     } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
+      values.role = "admin";
+      updateSet.role = "admin";
     }
 
     if (!values.lastSignedIn) {
@@ -84,59 +92,76 @@ export async function getUserByOpenId(openId: string) {
     return undefined;
   }
 
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.openId, openId))
+    .limit(1);
   return result.length > 0 ? result[0] : undefined;
 }
 
 /** Store a validated inquiry only after the router has applied abuse controls. */
-export async function createContactRequest(input: NewContactRequest): Promise<ContactRequest> {
+export async function createContactRequest(
+  input: NewContactRequest
+): Promise<void> {
   const db = await getDb();
   if (!db) {
     throw new Error("Contact requests are temporarily unavailable");
   }
 
   await db.insert(contactRequests).values(input);
-  const result = await db.select().from(contactRequests).orderBy(desc(contactRequests.id)).limit(1);
-  const savedRequest = result[0];
-
-  if (!savedRequest) {
-    throw new Error("Contact request could not be saved");
-  }
-
-  return savedRequest;
 }
 
 /** Admin-only views use a fixed, bounded result set to avoid accidental data overfetching. */
-export async function listContactRequests(limit: number): Promise<ContactRequest[]> {
+export async function listContactRequests(
+  limit: number
+): Promise<ContactRequest[]> {
   const db = await getDb();
   if (!db) {
     return [];
   }
 
-  return db.select().from(contactRequests).orderBy(desc(contactRequests.createdAt)).limit(limit);
+  return db
+    .select()
+    .from(contactRequests)
+    .orderBy(desc(contactRequests.createdAt))
+    .limit(limit);
 }
 
 /**
  * Atomically increment a contact rate window. Returning null preserves the
  * local guard fallback for development when a database connection is absent.
  */
-export async function recordContactAttempt(sourceHash: string, now: Date, windowEndsAt: Date, limit: number): Promise<boolean | null> {
+export async function recordContactAttempt(
+  sourceHash: string,
+  now: Date,
+  windowEndsAt: Date,
+  limit: number
+): Promise<boolean | null> {
   const db = await getDb();
   if (!db) return null;
 
   // Expired windows no longer contribute to throttling and are removed on the
   // write path using an indexed timestamp, avoiding unbounded state growth.
-  await db.delete(contactRateWindows).where(lt(contactRateWindows.windowEndsAt, now));
+  await db
+    .delete(contactRateWindows)
+    .where(lt(contactRateWindows.windowEndsAt, now));
 
-  await db.insert(contactRateWindows).values({ sourceHash, attempts: 1, windowEndsAt }).onDuplicateKeyUpdate({
-    set: {
-      attempts: sql`IF(${contactRateWindows.windowEndsAt} <= ${now}, 1, ${contactRateWindows.attempts} + 1)`,
-      windowEndsAt: sql`IF(${contactRateWindows.windowEndsAt} <= ${now}, ${windowEndsAt}, ${contactRateWindows.windowEndsAt})`,
-      updatedAt: now,
-    },
-  });
+  await db
+    .insert(contactRateWindows)
+    .values({ sourceHash, attempts: 1, windowEndsAt })
+    .onDuplicateKeyUpdate({
+      set: {
+        attempts: sql`IF(${contactRateWindows.windowEndsAt} <= ${now}, 1, ${contactRateWindows.attempts} + 1)`,
+        windowEndsAt: sql`IF(${contactRateWindows.windowEndsAt} <= ${now}, ${windowEndsAt}, ${contactRateWindows.windowEndsAt})`,
+        updatedAt: now,
+      },
+    });
 
-  const result = await db.select({ attempts: contactRateWindows.attempts }).from(contactRateWindows).where(eq(contactRateWindows.sourceHash, sourceHash)).limit(1);
+  const result = await db
+    .select({ attempts: contactRateWindows.attempts })
+    .from(contactRateWindows)
+    .where(eq(contactRateWindows.sourceHash, sourceHash))
+    .limit(1);
   return (result[0]?.attempts ?? limit + 1) <= limit;
 }
