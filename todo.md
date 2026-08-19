@@ -36,6 +36,6 @@
 - [x] Verify the Vercel-ready build and document the final deployment settings.
 - [x] Route branded assets and the favicon through a Vercel-compatible configurable durable asset origin.
 - [x] Re-run Vercel-route verification for API paths, deep links, and branded assets.
-- [ ] Upload the supplied branded artwork to a durable public CDN and set `VITE_ASSET_ORIGIN` in Vercel.
+- [x] Configure the verified public raw GitHub artwork origin as the durable Vercel asset fallback.
 - [x] Replace the initial Vercel favicon request with a static deployable fallback before runtime asset configuration.
 - [x] Add automated verification for Vercel SPA rewrite exclusions and external branded asset URL composition.
