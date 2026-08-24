@@ -56,6 +56,13 @@ describe("Vercel deployment routing", () => {
         expect.objectContaining({ key: "X-Frame-Options", value: "DENY" }),
       ])
     );
+
+    const contentPolicy = globalHeaders.find(
+      header => header.key === "Content-Security-Policy"
+    )?.value;
+    expect(contentPolicy).toContain(
+      "connect-src 'self' https://ofkqvwkjcbfvwbirexzw.supabase.co"
+    );
   });
 
   it("prevents CDN caching of dynamic API responses", async () => {
