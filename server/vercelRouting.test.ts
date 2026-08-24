@@ -72,14 +72,12 @@ describe("Vercel deployment routing", () => {
     );
 
     expect(route).toContain(
-      'import { registerAuthProxy } from "../../server/authProxy"'
+      'import { handleMagicLinkRequest } from "../../server/authProxy"'
     );
-    expect(route).toContain(
-      'import { applySecurityHeaders } from "../../server/security"'
-    );
-    expect(route).toContain("registerAuthProxy(app)");
-    expect(route).toContain("export default function handler");
-    expect(route).toContain("return app(request, response)");
+    expect(route).toContain('import { ENV } from "../../server/_core/env"');
+    expect(route).toContain("setRouteHeaders(response)");
+    expect(route).toContain("export default async function handler");
+    expect(route).toContain("handleMagicLinkRequest(request.body)");
   });
 
   it("prevents CDN caching of dynamic API responses", async () => {
