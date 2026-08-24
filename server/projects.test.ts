@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { projectInput } from "./routers";
+import { filterWorkspaceProjects } from "../client/src/lib/projectFilters";
 
 describe("Project Radar input", () => {
   const validProject = {
@@ -28,6 +29,31 @@ describe("Project Radar input", () => {
       projectInput.parse({ ...validProject, slug: "signal_lab" })
     ).toThrow();
     expect(projectInput.parse(validProject).slug).toBe("signal-lab");
+  });
+
+  it("filters workspace records by status and search text", () => {
+    const projects = [
+      {
+        id: 1,
+        status: "active" as const,
+        title: "Signal Lab",
+        codename: "PIVOT",
+        summary: "Testing a new direction.",
+      },
+      {
+        id: 2,
+        status: "shipped" as const,
+        title: "Field Notes",
+        codename: "TRACE",
+        summary: "A released archive.",
+      },
+    ];
+
+    expect(filterWorkspaceProjects(projects, "active", "pivot")).toHaveLength(
+      1
+    );
+    expect(filterWorkspaceProjects(projects, "all", "released")[0]?.id).toBe(2);
+    expect(filterWorkspaceProjects(projects, "paused", "")).toHaveLength(0);
   });
 
   it("rejects overlong or unsafe project content", () => {

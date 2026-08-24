@@ -133,3 +133,4 @@
 - [ ] Verify the exact production mantisdarling@proton.me sign-in after cooldown and capture the live dashboard role label or safe auth.me result.
 - [ ] Inspect the persisted production user role for the signed-in Supabase subject through a safe administrator check.
 - [ ] Document whether the MEMBER-to-ADMIN discrepancy came from deployment configuration, email-claim mismatch, or session freshness using live evidence.
+- [x] Continue XY OS work with the next safe product slice for Project Radar and the private team command center, preserving authentication and production data; added private search and status filters with regression coverage.

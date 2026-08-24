@@ -3,7 +3,19 @@ import { useMemo, useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { DashboardOfflineIndicator } from "@/components/DashboardOfflineIndicator";
 import { useAuth } from "@/_core/hooks/useAuth";
+import {
+  filterWorkspaceProjects,
+  type WorkspaceStatus,
+} from "@/lib/projectFilters";
 import { trpc } from "@/lib/trpc";
+
+const workspaceFilters: Array<{ value: WorkspaceStatus; label: string }> = [
+  { value: "all", label: "All" },
+  { value: "idea", label: "Ideas" },
+  { value: "active", label: "In motion" },
+  { value: "shipped", label: "Shipped" },
+  { value: "paused", label: "Paused" },
+];
 
 const statusLabels = {
   idea: "IDEA",
@@ -26,7 +38,15 @@ function ProjectWorkspace() {
     isLoading,
     isError,
   } = trpc.projects.teamList.useQuery();
+  const [workspaceFilter, setWorkspaceFilter] =
+    useState<WorkspaceStatus>("all");
+  const [workspaceSearch, setWorkspaceSearch] = useState("");
   const utils = trpc.useUtils();
+  const visibleProjects = useMemo(
+    () =>
+      filterWorkspaceProjects(projects ?? [], workspaceFilter, workspaceSearch),
+    [projects, workspaceFilter, workspaceSearch]
+  );
   const createProject = trpc.projects.create.useMutation({
     onSuccess: async () => {
       setDraft(emptyDraft);
@@ -166,7 +186,43 @@ function ProjectWorkspace() {
         <div className="workspace-project-list">
           <div className="workspace-list-topline">
             <span>TEAM INDEX</span>
-            <span>{projects?.length ?? 0} RECORDS</span>
+            <span>
+              {visibleProjects.length} / {projects?.length ?? 0} RECORDS
+            </span>
+          </div>
+          <div
+            className="workspace-controls"
+            aria-label="Filter private project records"
+          >
+            <label className="workspace-search">
+              <span>Scan records</span>
+              <input
+                value={workspaceSearch}
+                onChange={event => setWorkspaceSearch(event.target.value)}
+                placeholder="Search title or codename"
+                type="search"
+                aria-label="Search private projects"
+              />
+            </label>
+            <div
+              className="workspace-filter-list"
+              role="group"
+              aria-label="Filter private projects by status"
+            >
+              {workspaceFilters.map(option => (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={
+                    workspaceFilter === option.value ? "is-active" : ""
+                  }
+                  aria-pressed={workspaceFilter === option.value}
+                  onClick={() => setWorkspaceFilter(option.value)}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
           {isLoading && (
             <p className="workspace-empty" role="status">
@@ -188,7 +244,18 @@ function ProjectWorkspace() {
               </small>
             </div>
           )}
-          {projects?.map(project => (
+          {!isLoading &&
+            !isError &&
+            projects &&
+            projects.length > 0 &&
+            visibleProjects.length === 0 && (
+              <div className="workspace-empty workspace-empty-filtered">
+                <span className="workspace-empty-mark">00</span>
+                <p>No matching signals.</p>
+                <small>Try another status or clear the search field.</small>
+              </div>
+            )}
+          {visibleProjects.map(project => (
             <article className="workspace-project-row" key={project.id}>
               <div>
                 <span style={{ color: project.accent }}>
