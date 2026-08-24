@@ -53,6 +53,7 @@ export default function DashboardLayout({
   const [notice, setNotice] = useState<string | null>(null);
   const [signInError, setSignInError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
+  const requestInFlight = useRef(false);
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
@@ -81,6 +82,8 @@ export default function DashboardLayout({
 
   if (!user) {
     const requestLink = async () => {
+      if (requestInFlight.current) return;
+      requestInFlight.current = true;
       setNotice(null);
       setSignInError(null);
       setIsSending(true);
@@ -95,6 +98,7 @@ export default function DashboardLayout({
             : "Unable to send a sign-in link."
         );
       } finally {
+        requestInFlight.current = false;
         setIsSending(false);
       }
     };

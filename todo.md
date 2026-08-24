@@ -104,3 +104,5 @@
 - [x] Resolve the current PR #5 `todo.md` merge conflict against GitHub `main`, push the reconciled branch, and rerun required checks.
 - [ ] Perform a full repository and live-production authentication audit, including all client, server, CSP, Vercel routing, Supabase, and error-handling paths.
 - [ ] Apply and verify the confirmed fix for the remaining production `Failed to fetch` failure, then deliver it through GitHub and Vercel.
+- [ ] Determine whether the production email rate-limit response is caused by duplicate form submissions, direct-plus-fallback requests, or Supabase provider limits despite a single user click.
+- [ ] Fix any application-side duplicate request behavior and add regression coverage before the next deployment.

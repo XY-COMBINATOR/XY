@@ -58,38 +58,19 @@ export function useAuth(options?: UseAuthOptions) {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    try {
-      const { error: linkError } = await supabase.auth.signInWithOtp({
-        email: normalizedEmail,
-        options: {
-          shouldCreateUser: false,
-          emailRedirectTo: window.location.origin,
-        },
-      });
-      if (linkError) throw linkError;
-      return;
-    } catch (linkError) {
-      // Some browsers or networks block direct cross-origin Supabase requests.
-      // Retry through our same-origin server route only for a real fetch failure;
-      // Supabase AuthApiError responses must remain visible to the user.
-      if (
-        !(linkError instanceof TypeError) ||
-        !/fetch/i.test(linkError.message)
-      ) {
-        throw linkError;
-      }
-    }
-
-    const fallback = await fetch("/api/auth/magic-link", {
+    // Use one same-origin request. A direct cross-origin request can be
+    // processed by Supabase even when the browser reports a CORS/network error;
+    // retrying it would send duplicate emails and trigger provider rate limits.
+    const response = await fetch("/api/auth/magic-link", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",
       body: JSON.stringify({ email: normalizedEmail }),
     });
-    const payload = (await fallback.json().catch(() => null)) as {
+    const payload = (await response.json().catch(() => null)) as {
       error?: unknown;
     } | null;
-    if (!fallback.ok) {
+    if (!response.ok) {
       const message =
         typeof payload?.error === "string"
           ? payload.error
