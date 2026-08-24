@@ -6,6 +6,7 @@ import {
   designatedAdminEmail,
   isTeamAdmin,
   roleForSupabaseEmail,
+  verifiedUserFromClaims,
 } from "./supabaseAuth";
 
 function createResponse() {
@@ -106,6 +107,16 @@ describe("production security configuration", () => {
   it("keeps the designated verified owner admin without a secret fallback", () => {
     expect(roleForSupabaseEmail(designatedAdminEmail, "")).toBe("admin");
     expect(roleForSupabaseEmail("member@example.com", "")).toBe("user");
+  });
+
+  it("keeps a verified admin authenticated without database readback", () => {
+    const user = verifiedUserFromClaims(
+      { email: designatedAdminEmail, sub: "subject-1" },
+      designatedAdminEmail,
+      "subject-1"
+    );
+    expect(user.openId).toBe("supabase:subject-1");
+    expect(user.role).toBe("admin");
   });
 
   it("resolves the verified administrator identity authoritatively", () => {

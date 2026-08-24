@@ -27,6 +27,26 @@ function memberName(claims: SupabaseClaims, email: string) {
     : (email.split("@")[0] ?? "Member");
 }
 
+/** Build a safe in-memory identity from a token already verified by Supabase JWKS. */
+export function verifiedUserFromClaims(
+  claims: SupabaseClaims,
+  email: string,
+  subject: string
+): User {
+  const now = new Date();
+  return {
+    id: 0,
+    openId: `supabase:${subject}`,
+    name: memberName(claims, email),
+    email,
+    loginMethod: "email-link",
+    role: roleForSupabaseEmail(email),
+    createdAt: now,
+    updatedAt: now,
+    lastSignedIn: now,
+  };
+}
+
 export function isTeamAdmin(
   email: string,
   adminEmail = ENV.teamAdminEmail || designatedAdminEmail
@@ -97,7 +117,12 @@ export async function authenticateSupabaseRequest(
     });
 
     const storedUser = await db.getUserByOpenId(openId);
-    if (!storedUser) return null;
+    if (!storedUser) {
+      // A verified session remains authenticated even if the autoscaled database
+      // is temporarily unavailable. Return claims-derived identity so auth.me and
+      // server-side role gates do not silently downgrade the session to MEMBER.
+      return verifiedUserFromClaims(claims, email, subject);
+    }
 
     // Never trust a stale database role over the verified identity on this request.
     return { ...storedUser, role: verifiedRole };
