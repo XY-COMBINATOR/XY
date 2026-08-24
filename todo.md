@@ -108,7 +108,7 @@
 - [x] Fix any application-side duplicate request behavior and add regression coverage before the next deployment.
 - [ ] Verify that the exact `TEAMADMINEMAIL` account can sign in on production and is mapped to administrator access, with a visible role confirmation or documented database check.
 - [x] Add a focused operator verification note for administrator-role confirmation after Supabase magic-link sign-in.
-- [ ] Diagnose why the authenticated `mantisdarling@proton.me` account is displayed as MEMBER instead of ADMIN in production, including live JWT identity, persisted user role, and evidence for whether deployment configuration or session freshness is responsible.
+- [ ] Diagnose why the authenticated `mantisdarling@proton.me` account is displayed as MEMBER instead of ADMIN in production, using a fresh live JWT identity and persisted subject-level role check; current evidence only shows zero rows for the email in the connected database.
 - [x] Define the next flagship feature: a cinematic XY OS that combines a public project radar with a private team command center, creative experiment lab, and live team presence.
 - [ ] Preserve the existing authentication flow and complete the administrator-view verification after the Supabase rate-limit cooldown.
 - [x] Prepare a realistic XY OS effort estimate covering timeline, code size, dependencies, risks, checkpoints, and rollback boundaries before implementation.
