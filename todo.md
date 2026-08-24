@@ -118,3 +118,5 @@
 - [x] Add the protected private Project Workspace with bounded project creation and server-side ownership checks.
 - [x] Add Project Radar validation tests, feature-flag rollback support, implementation plan, and responsive visual verification.
 - [x] Create and merge the XY OS delivery pull request and verify the new Project Radar and dashboard routes are live in production; administrator role confirmation remains a separate operator check.
+- [ ] Diagnose why the merged same-origin Auth fallback now returns generic `Unable to send a sign-in link.` in production instead of a safe actionable Supabase error.
+- [ ] Correct the fallback configuration or error propagation, add regression coverage, and deliver a verified production fix.
