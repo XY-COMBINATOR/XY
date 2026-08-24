@@ -29,6 +29,14 @@ export function isTeamAdmin(email: string, adminEmail = ENV.teamAdminEmail) {
   );
 }
 
+/** The verified Supabase email is authoritative; stored roles must not become stale. */
+export function roleForSupabaseEmail(
+  email: string,
+  adminEmail = ENV.teamAdminEmail
+): User["role"] {
+  return isTeamAdmin(email, adminEmail) ? "admin" : "user";
+}
+
 function bearerToken(request: Request) {
   const header = request.headers.authorization;
   return typeof header === "string" && header.startsWith("Bearer ")
@@ -72,16 +80,21 @@ export async function authenticateSupabaseRequest(
     if (!email || !subject) return null;
 
     const openId = `supabase:${subject}`;
+    const verifiedRole = roleForSupabaseEmail(email);
     await db.upsertUser({
       openId,
       email,
       name: memberName(claims, email),
       loginMethod: "email-link",
-      role: isTeamAdmin(email) ? "admin" : "user",
+      role: verifiedRole,
       lastSignedIn: new Date(),
     });
 
-    return (await db.getUserByOpenId(openId)) ?? null;
+    const storedUser = await db.getUserByOpenId(openId);
+    if (!storedUser) return null;
+
+    // Never trust a stale database role over the verified identity on this request.
+    return { ...storedUser, role: verifiedRole };
   } catch {
     // Invalid, expired, or mis-scoped tokens are treated as anonymous requests.
     return null;

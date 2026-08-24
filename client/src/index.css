@@ -3079,6 +3079,37 @@ img {
     sans-serif;
   letter-spacing: -0.08em;
 }
+.public-project-discovery {
+  display: grid;
+  justify-items: end;
+  gap: 0.8rem;
+}
+.public-project-search {
+  display: grid;
+  gap: 0.35rem;
+  width: min(240px, 100%);
+  color: rgba(243, 239, 233, 0.52);
+  font:
+    500 0.55rem/1 "DM Mono",
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.public-project-search input {
+  width: 100%;
+  border: 1px solid rgba(243, 239, 233, 0.2);
+  border-radius: 0;
+  padding: 0.62rem 0.7rem;
+  color: var(--xy-paper);
+  background: #111;
+  font:
+    0.72rem/1.4 "Manrope",
+    sans-serif;
+  outline: none;
+}
+.public-project-search input:focus {
+  border-color: var(--xy-red);
+}
 .project-filter-list {
   display: flex;
   flex-wrap: wrap;
@@ -3307,6 +3338,69 @@ img {
 }
 .workspace-project-list {
   min-height: 420px;
+}
+.workspace-controls {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(243, 239, 233, 0.16);
+}
+.workspace-search {
+  display: grid;
+  gap: 0.45rem;
+  color: rgba(243, 239, 233, 0.52);
+  font:
+    500 0.58rem/1 "DM Mono",
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.workspace-search input {
+  width: 100%;
+  border: 1px solid rgba(243, 239, 233, 0.2);
+  border-radius: 0;
+  padding: 0.72rem 0.8rem;
+  color: var(--xy-paper);
+  background: #111;
+  font:
+    0.76rem/1.4 "Manrope",
+    sans-serif;
+  outline: none;
+  transition: border-color 160ms var(--ease-out);
+}
+.workspace-search input:focus {
+  border-color: var(--xy-red);
+}
+.workspace-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.workspace-filter-list button {
+  border: 1px solid rgba(243, 239, 233, 0.2);
+  border-radius: 999px;
+  padding: 0.42rem 0.62rem;
+  color: rgba(243, 239, 233, 0.58);
+  background: transparent;
+  font:
+    500 0.55rem/1 "DM Mono",
+    monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    border-color 160ms var(--ease-out),
+    color 160ms var(--ease-out),
+    background-color 160ms var(--ease-out);
+}
+.workspace-filter-list button:hover,
+.workspace-filter-list button.is-active {
+  border-color: var(--xy-red);
+  color: var(--xy-paper);
+  background: rgba(239, 61, 50, 0.16);
+}
+.workspace-empty-filtered {
+  min-height: 230px;
 }
 .workspace-empty {
   display: grid;

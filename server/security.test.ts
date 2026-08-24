@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { validateProductionEnvironment } from "./_core/env";
 import { getSessionSameSite } from "./_core/cookies";
+import { ENV, validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
-import { isTeamAdmin } from "./supabaseAuth";
+import { isTeamAdmin, roleForSupabaseEmail } from "./supabaseAuth";
 
 function createResponse() {
   const values = new Map<string, string>();
@@ -89,5 +89,26 @@ describe("production security configuration", () => {
   it("assigns the administrator role only to the configured email", () => {
     expect(isTeamAdmin("leader@example.com", "leader@example.com")).toBe(true);
     expect(isTeamAdmin("member@example.com", "leader@example.com")).toBe(false);
+  });
+
+  it("recognizes the configured TEAMADMINEMAIL value after normalization", () => {
+    const configuredAdmin = "mantisdarling@proton.me";
+    expect(isTeamAdmin(" MANTISDARLING@PROTON.ME ", configuredAdmin)).toBe(
+      true
+    );
+    expect(isTeamAdmin("member@example.com", configuredAdmin)).toBe(false);
+  });
+
+  it("resolves the verified administrator identity authoritatively", () => {
+    const configuredAdmin = "mantisdarling@proton.me";
+    expect(
+      roleForSupabaseEmail(" MANTISDARLING@PROTON.ME ", configuredAdmin)
+    ).toBe("admin");
+    expect(roleForSupabaseEmail("member@example.com", configuredAdmin)).toBe(
+      "user"
+    );
+    expect(
+      roleForSupabaseEmail("leader@example.com", "leader@example.com")
+    ).toBe("admin");
   });
 });

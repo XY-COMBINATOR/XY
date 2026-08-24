@@ -108,7 +108,7 @@
 - [x] Fix any application-side duplicate request behavior and add regression coverage before the next deployment.
 - [ ] Verify that the exact `TEAMADMINEMAIL` account can sign in on production and is mapped to administrator access, with a visible role confirmation or documented database check.
 - [x] Add a focused operator verification note for administrator-role confirmation after Supabase magic-link sign-in.
-- [ ] Diagnose why the authenticated `mantisdarling@proton.me` account is displayed as MEMBER instead of ADMIN in production, checking exact configured identity, claims, and persisted role mapping.
+- [ ] Diagnose why the authenticated `mantisdarling@proton.me` account is displayed as MEMBER instead of ADMIN in production, using a fresh live JWT identity and persisted subject-level role check; current evidence only shows zero rows for the email in the connected database.
 - [x] Define the next flagship feature: a cinematic XY OS that combines a public project radar with a private team command center, creative experiment lab, and live team presence.
 - [ ] Preserve the existing authentication flow and complete the administrator-view verification after the Supabase rate-limit cooldown.
 - [x] Prepare a realistic XY OS effort estimate covering timeline, code size, dependencies, risks, checkpoints, and rollback boundaries before implementation.
@@ -120,11 +120,21 @@
 - [x] Create and merge the XY OS delivery pull request and verify the new Project Radar and dashboard routes are live in production; administrator role confirmation remains a separate operator check.
 - [x] Diagnose why the merged same-origin Auth fallback now returns generic `Unable to send a sign-in link.` in production instead of a safe actionable Supabase error.
 - [x] Correct the fallback configuration and add regression coverage; local tests, type-check, formatting, and build pass.
-- [ ] Merge Pull Request #8 after resolving its conflicts, redeploy production, and verify the live magic-link request succeeds.
-- [ ] Merge the isolated Auth-function fix, redeploy production, and verify the live endpoint returns a safe response instead of FUNCTION_INVOCATION_FAILED.
+- [x] Merge Pull Request #8; the first production probe exposed a follow-up serverless invocation issue documented and fixed below.
+- [x] Merge the isolated Auth-function fix; the next production probe exposed a follow-up handler issue documented and fixed below.
 - [ ] Verify the invited `TEAMADMINEMAIL` account shows ADMIN VIEW after the production redeploy.
 - [x] Fix the explicit Vercel Auth function so it does not initialize unrelated database configuration; local tests, type-check, formatting, and build pass.
 - [x] Replace the Vercel Auth entry point with a dependency-light direct Node handler; local tests, type-check, formatting, and build pass.
-- [ ] Merge the direct-handler fix, redeploy production, and verify the live Auth endpoint returns a safe response.
+- [x] Merge the direct-handler fix; the next production probe exposed a remaining invocation issue documented and fixed below.
 - [x] Inline the bounded Auth request logic in the Vercel entry point so invocation cannot fail on server module resolution; local tests, type-check, formatting, and build pass.
-- [ ] Merge the inline-handler fix, redeploy production, and verify the live Auth endpoint returns a safe response.
+- [x] Merge the inline-handler fix and verify the production route now returns safe 400 and 405 responses instead of 404 or FUNCTION_INVOCATION_FAILED.
+- [x] Re-audit the authentication, role mapping, Vercel route, environment handling, and regression coverage; no code defect was found in the ADMIN/MEMBER mapping, and the configured-email regression test passes.
+- [x] Perform a repository-wide re-audit of frontend, backend, database, authentication, routing, security, dependencies, tests, and deployment configuration while sign-in is rate-limited; 38 tests, type-check, formatting, build, coverage, dependency audit, and unsafe-pattern scans completed.
+- [ ] Verify the exact production mantisdarling@proton.me sign-in after cooldown and capture the live dashboard role label or safe auth.me result.
+- [ ] Inspect the persisted production user role for the signed-in Supabase subject through a safe administrator check.
+- [ ] Document whether the MEMBER-to-ADMIN discrepancy came from deployment configuration, email-claim mismatch, or session freshness using live evidence.
+- [x] Continue XY OS work with the next safe product slice for Project Radar and the private team command center, preserving authentication and production data; added private search and status filters with regression coverage.
+- [x] Extend the public Project Radar with accessible text search and live status counts without changing its backend contract; verified with 39 passing tests, type-check, formatting, build, and a desktop Project Radar screenshot.
+- [x] Improve the public Project Radar no-match state with a clear-search action while preserving the truthful empty state for a genuinely empty index; verified with 39 tests, type-check, formatting, and production build.
+- [x] Fix the live MEMBER VIEW regression by making the verified Supabase email authoritative for role resolution on every authenticated request, while retaining database persistence and server-side admin gates; 40 tests, type-check, formatting, and build pass.
+- [ ] Deliver the authoritative role-resolution fix to production and verify ADMIN VIEW with a fresh sign-in.
