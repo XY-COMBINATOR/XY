@@ -129,3 +129,4 @@
 - [x] Inline the bounded Auth request logic in the Vercel entry point so invocation cannot fail on server module resolution; local tests, type-check, formatting, and build pass.
 - [x] Merge the inline-handler fix and verify the production route now returns safe 400 and 405 responses instead of 404 or FUNCTION_INVOCATION_FAILED.
 - [x] Re-audit the authentication, role mapping, Vercel route, environment handling, and regression coverage; no code defect was found in the ADMIN/MEMBER mapping, and the configured-email regression test passes.
+- [x] Perform a repository-wide re-audit of frontend, backend, database, authentication, routing, security, dependencies, tests, and deployment configuration while sign-in is rate-limited; 38 tests, type-check, formatting, build, coverage, dependency audit, and unsafe-pattern scans completed.
