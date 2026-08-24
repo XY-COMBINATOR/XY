@@ -1,13 +1,216 @@
+import { ArrowUpRight, LoaderCircle, Plus, ShieldCheck } from "lucide-react";
+import { useMemo, useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { DashboardOfflineIndicator } from "@/components/DashboardOfflineIndicator";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 
-/**
- * A small authenticated landing route proves the dashboard shell's loading
- * skeleton during the auth.me serverless query and provides a stable base for
- * future member-only tools.
- */
+const statusLabels = {
+  idea: "IDEA",
+  active: "IN MOTION",
+  shipped: "SHIPPED",
+  paused: "PAUSED",
+} as const;
+
+const emptyDraft = {
+  slug: "",
+  title: "",
+  codename: "",
+  summary: "",
+  description: "",
+};
+
+function ProjectWorkspace() {
+  const {
+    data: projects,
+    isLoading,
+    isError,
+  } = trpc.projects.teamList.useQuery();
+  const utils = trpc.useUtils();
+  const createProject = trpc.projects.create.useMutation({
+    onSuccess: async () => {
+      setDraft(emptyDraft);
+      setFormMessage("Project saved to the private workspace.");
+      await utils.projects.teamList.invalidate();
+    },
+    onError: error =>
+      setFormMessage(error.message || "Project could not be saved."),
+  });
+  const [draft, setDraft] = useState(emptyDraft);
+  const [formMessage, setFormMessage] = useState<string | null>(null);
+  const canSubmit = useMemo(
+    () =>
+      draft.slug.trim().length >= 2 &&
+      draft.title.trim().length >= 2 &&
+      draft.codename.trim().length >= 2 &&
+      draft.summary.trim().length >= 8 &&
+      draft.description.trim().length >= 20,
+    [draft]
+  );
+
+  const updateDraft = (field: keyof typeof emptyDraft, value: string) => {
+    setDraft(current => ({ ...current, [field]: value }));
+    setFormMessage(null);
+  };
+
+  return (
+    <section className="project-workspace" aria-labelledby="workspace-heading">
+      <div className="workspace-heading">
+        <div>
+          <p className="dashboard-kicker">PROJECT WORKSPACE / PRIVATE</p>
+          <h2 id="workspace-heading">
+            MAKE THE
+            <br />
+            <i>TRACE.</i>
+          </h2>
+        </div>
+        <div className="workspace-security-note">
+          <ShieldCheck size={20} aria-hidden="true" />
+          <span>Private by default. Publish only when the team is ready.</span>
+        </div>
+      </div>
+
+      <div className="workspace-grid">
+        <form
+          className="project-draft-form"
+          onSubmit={event => {
+            event.preventDefault();
+            if (!canSubmit || createProject.isPending) return;
+            createProject.mutate({
+              ...draft,
+              status: "idea",
+              visibility: "private",
+              progress: 0,
+              accent: "#ef3d32",
+            });
+          }}
+        >
+          <div className="workspace-form-topline">
+            <span>NEW TRANSMISSION</span>
+            <Plus size={17} aria-hidden="true" />
+          </div>
+          <label>
+            Slug
+            <input
+              value={draft.slug}
+              onChange={event =>
+                updateDraft("slug", event.target.value.toLowerCase())
+              }
+              placeholder="signal-lab"
+              maxLength={96}
+              required
+            />
+          </label>
+          <label>
+            Title
+            <input
+              value={draft.title}
+              onChange={event => updateDraft("title", event.target.value)}
+              placeholder="Project title"
+              maxLength={120}
+              required
+            />
+          </label>
+          <label>
+            Codename
+            <input
+              value={draft.codename}
+              onChange={event =>
+                updateDraft("codename", event.target.value.toUpperCase())
+              }
+              placeholder="PIVOT"
+              maxLength={48}
+              required
+            />
+          </label>
+          <label>
+            One-line ambition
+            <input
+              value={draft.summary}
+              onChange={event => updateDraft("summary", event.target.value)}
+              placeholder="What is this becoming?"
+              maxLength={280}
+              required
+            />
+          </label>
+          <label>
+            Working brief
+            <textarea
+              value={draft.description}
+              onChange={event => updateDraft("description", event.target.value)}
+              placeholder="What problem, format, or tension is the team exploring?"
+              maxLength={4000}
+              required
+              rows={5}
+            />
+          </label>
+          <button
+            className="workspace-submit"
+            type="submit"
+            disabled={!canSubmit || createProject.isPending}
+          >
+            {createProject.isPending ? (
+              <LoaderCircle className="spin" size={16} />
+            ) : (
+              <ArrowUpRight size={16} />
+            )}
+            {createProject.isPending ? "Saving" : "Save private draft"}
+          </button>
+          {formMessage && (
+            <p className="workspace-form-message" role="status">
+              {formMessage}
+            </p>
+          )}
+        </form>
+
+        <div className="workspace-project-list">
+          <div className="workspace-list-topline">
+            <span>TEAM INDEX</span>
+            <span>{projects?.length ?? 0} RECORDS</span>
+          </div>
+          {isLoading && (
+            <p className="workspace-empty" role="status">
+              Loading the team index...
+            </p>
+          )}
+          {isError && (
+            <p className="workspace-empty" role="alert">
+              The team index is unavailable. Try again shortly.
+            </p>
+          )}
+          {!isLoading && !isError && projects?.length === 0 && (
+            <div className="workspace-empty">
+              <span className="workspace-empty-mark">01</span>
+              <p>No project records yet.</p>
+              <small>
+                Write the first private brief. It will stay inside the control
+                room.
+              </small>
+            </div>
+          )}
+          {projects?.map(project => (
+            <article className="workspace-project-row" key={project.id}>
+              <div>
+                <span style={{ color: project.accent }}>
+                  {project.codename}
+                </span>
+                <h3>{project.title}</h3>
+                <p>{project.summary}</p>
+              </div>
+              <div className="workspace-project-meta">
+                <strong>{statusLabels[project.status]}</strong>
+                <small>
+                  {project.visibility} / {project.progress}%
+                </small>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function DashboardContent() {
   const { user } = useAuth();
   const { data: serverUser } = trpc.auth.me.useQuery();
@@ -40,11 +243,12 @@ function DashboardContent() {
           <span>NEXT BUILD</span>
           <strong>PROJECT INDEX</strong>
           <p>
-            Add member-only project drafts, notes, and release signals here when
-            needed.
+            Capture a private brief below, then decide when the work is ready to
+            transmit.
           </p>
         </article>
       </div>
+      <ProjectWorkspace />
     </section>
   );
 }

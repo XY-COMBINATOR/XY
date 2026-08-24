@@ -5,10 +5,12 @@
 import { ArrowUpRight } from "lucide-react";
 import { Link } from "wouter";
 import { assetUrl } from "@/lib/assets";
+import { xyOsEnabled } from "@/lib/featureFlags";
 
 const navigation = [
   ["Collective", "/collective"],
   ["People", "/people"],
+  ["Projects", "/projects"],
   ["Capabilities", "/capabilities"],
   ["Contact", "/contact"],
   ["Team access", "/dashboard"],
@@ -41,11 +43,13 @@ export function PublicFrame({
           </span>
         </Link>
         <nav className="route-nav" aria-label="Main navigation">
-          {navigation.map(([name, href]) => (
-            <Link key={href} href={href}>
-              {name}
-            </Link>
-          ))}
+          {navigation
+            .filter(([, href]) => xyOsEnabled || href !== "/projects")
+            .map(([name, href]) => (
+              <Link key={href} href={href}>
+                {name}
+              </Link>
+            ))}
         </nav>
         <span className="route-label">{label}</span>
       </header>

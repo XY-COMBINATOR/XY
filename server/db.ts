@@ -4,8 +4,11 @@ import {
   ContactRequest,
   InsertUser,
   NewContactRequest,
+  InsertProject,
+  Project,
   contactRateWindows,
   contactRequests,
+  projects,
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
@@ -83,6 +86,59 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     console.error("[Database] Failed to upsert user:", error);
     throw error;
   }
+}
+
+export async function listPublicProjects(): Promise<Project[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(projects)
+    .where(eq(projects.visibility, "public"))
+    .orderBy(desc(projects.updatedAt))
+    .limit(48);
+}
+
+export async function listProjectsForTeam(): Promise<Project[]> {
+  const db = await getDb();
+  if (!db) return [];
+
+  return db
+    .select()
+    .from(projects)
+    .orderBy(desc(projects.updatedAt))
+    .limit(100);
+}
+
+export async function createProject(project: InsertProject): Promise<Project> {
+  const db = await getDb();
+  if (!db) throw new Error("Projects are temporarily unavailable");
+
+  await db.insert(projects).values(project);
+  const [created] = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.slug, project.slug))
+    .limit(1);
+  if (!created) throw new Error("Project was not created");
+  return created;
+}
+
+export async function updateProject(
+  id: number,
+  project: Partial<InsertProject>
+): Promise<Project | undefined> {
+  const db = await getDb();
+  if (!db) throw new Error("Projects are temporarily unavailable");
+
+  await db.update(projects).set(project).where(eq(projects.id, id));
+  const [updated] = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, id))
+    .limit(1);
+  return updated;
 }
 
 export async function getUserByOpenId(openId: string) {
