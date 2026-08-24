@@ -2,7 +2,6 @@ import { ArrowUpRight, LoaderCircle, Plus, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { DashboardOfflineIndicator } from "@/components/DashboardOfflineIndicator";
-import { useAuth } from "@/_core/hooks/useAuth";
 import {
   filterWorkspaceProjects,
   type WorkspaceStatus,
@@ -33,12 +32,12 @@ const emptyDraft = {
   description: "",
 };
 
-function ProjectWorkspace({ enabled }: { enabled: boolean }) {
+function ProjectWorkspace() {
   const {
     data: projects,
     isLoading,
     isError,
-  } = trpc.projects.teamList.useQuery(undefined, { enabled });
+  } = trpc.projects.teamList.useQuery();
   const [workspaceFilter, setWorkspaceFilter] =
     useState<WorkspaceStatus>("all");
   const [workspaceSearch, setWorkspaceSearch] = useState("");
@@ -280,15 +279,17 @@ function ProjectWorkspace({ enabled }: { enabled: boolean }) {
 }
 
 function DashboardContent() {
-  const { user, loading: authLoading } = useAuth();
+  // DashboardLayout renders this only after its authenticated shell is ready.
+  // Keep one auth lifecycle: the tRPC transport independently awaits the
+  // current Supabase session before sending the role request.
   const serverRoleQuery = trpc.auth.me.useQuery(undefined, {
-    enabled: !authLoading && Boolean(user),
     staleTime: 0,
   });
   const serverUser = serverRoleQuery.data;
   const roleLabel = dashboardRoleLabel(
     serverUser?.role,
-    serverRoleQuery.isLoading
+    serverRoleQuery.isLoading,
+    serverRoleQuery.isError
   );
 
   return (
@@ -299,10 +300,7 @@ function DashboardContent() {
         WELCOME BACK,
         <br />
         <i>
-          {user?.user_metadata?.full_name ??
-            user?.user_metadata?.name ??
-            user?.email?.split("@")[0] ??
-            "COLLECTIVE"}
+          {serverUser?.name ?? serverUser?.email?.split("@")[0] ?? "COLLECTIVE"}
           .
         </i>
       </h1>
@@ -323,7 +321,7 @@ function DashboardContent() {
           </p>
         </article>
       </div>
-      <ProjectWorkspace enabled={!authLoading && Boolean(user)} />
+      <ProjectWorkspace />
     </section>
   );
 }
