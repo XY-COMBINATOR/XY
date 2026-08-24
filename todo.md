@@ -86,4 +86,7 @@
 - [x] Add focused regression coverage for the Team access navigation entry so the new public sign-in path is explicitly verified.
 - [x] Capture and review desktop screenshots of the homepage and `/dashboard` showing the Team access entry point and sign-in screen.
 - [x] Document review of the captured desktop screenshots: homepage shows the Team access link; signed-out `/dashboard` shows the Supabase sign-in screen, with local environment configuration noted separately.
-- [ ] Resolve the Pull Request #4 conflict against the current `main` branch, rerun checks, and keep the existing one-review protection in place.
+- [x] Resolve the Pull Request #4 conflict against the current `main` branch, rerun checks, and keep the existing one-review protection in place.
+- [x] Fix the Team access change formatting in the three flagged source files, rerun the GitHub-equivalent formatting check, and update Pull Request #4.
+- [ ] Commit and push the formatted navigation and regression-test changes to `feature/supabase-team-access`, then confirm Pull Request #4 updates.
+- [ ] Re-check Pull Request #4 and verify the GitHub Quality workflow passes with the formatting gate cleared.

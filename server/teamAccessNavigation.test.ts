@@ -17,7 +17,9 @@ describe("team access navigation", () => {
   });
 
   it("keeps team access available on routed public pages", () => {
-    const publicFrame = readProjectFile("client/src/components/PublicFrame.tsx");
+    const publicFrame = readProjectFile(
+      "client/src/components/PublicFrame.tsx"
+    );
 
     expect(publicFrame).toContain('["Team access", "/dashboard"]');
   });
