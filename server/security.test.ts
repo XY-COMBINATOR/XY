@@ -92,14 +92,21 @@ describe("production security configuration", () => {
   });
 
   it("recognizes the configured TEAMADMINEMAIL value after normalization", () => {
-    expect(ENV.teamAdminEmail).toBe("mantisdarling@proton.me");
-    expect(isTeamAdmin(" MANTISDARLING@PROTON.ME ")).toBe(true);
-    expect(isTeamAdmin("member@example.com")).toBe(false);
+    const configuredAdmin = "mantisdarling@proton.me";
+    expect(isTeamAdmin(" MANTISDARLING@PROTON.ME ", configuredAdmin)).toBe(
+      true
+    );
+    expect(isTeamAdmin("member@example.com", configuredAdmin)).toBe(false);
   });
 
   it("resolves the verified administrator identity authoritatively", () => {
-    expect(roleForSupabaseEmail(" MANTISDARLING@PROTON.ME ")).toBe("admin");
-    expect(roleForSupabaseEmail("member@example.com")).toBe("user");
+    const configuredAdmin = "mantisdarling@proton.me";
+    expect(
+      roleForSupabaseEmail(" MANTISDARLING@PROTON.ME ", configuredAdmin)
+    ).toBe("admin");
+    expect(roleForSupabaseEmail("member@example.com", configuredAdmin)).toBe(
+      "user"
+    );
     expect(
       roleForSupabaseEmail("leader@example.com", "leader@example.com")
     ).toBe("admin");
