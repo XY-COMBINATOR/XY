@@ -107,4 +107,4 @@
 - [x] Determine whether the production email rate-limit response is caused by duplicate form submissions, direct-plus-fallback requests, or Supabase provider limits despite a single user click.
 - [x] Fix any application-side duplicate request behavior and add regression coverage before the next deployment.
 - [ ] Verify that the exact `TEAMADMINEMAIL` account can sign in on production and is mapped to administrator access, with a visible role confirmation or documented database check.
-- [ ] Add a focused operator verification note for administrator-role confirmation after Supabase magic-link sign-in.
+- [x] Add a focused operator verification note for administrator-role confirmation after Supabase magic-link sign-in.
