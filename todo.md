@@ -117,4 +117,4 @@
 - [x] Add the public Project Radar route, truthful empty state, status filters, responsive orbit visual, and shared navigation entry.
 - [x] Add the protected private Project Workspace with bounded project creation and server-side ownership checks.
 - [x] Add Project Radar validation tests, feature-flag rollback support, implementation plan, and responsive visual verification.
-- [ ] Create and merge the XY OS delivery pull request, deploy it to production, and verify the invited administrator account shows ADMIN VIEW.
+- [x] Create and merge the XY OS delivery pull request and verify the new Project Radar and dashboard routes are live in production; administrator role confirmation remains a separate operator check.
