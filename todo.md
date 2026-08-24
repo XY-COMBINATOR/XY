@@ -134,3 +134,4 @@
 - [ ] Inspect the persisted production user role for the signed-in Supabase subject through a safe administrator check.
 - [ ] Document whether the MEMBER-to-ADMIN discrepancy came from deployment configuration, email-claim mismatch, or session freshness using live evidence.
 - [x] Continue XY OS work with the next safe product slice for Project Radar and the private team command center, preserving authentication and production data; added private search and status filters with regression coverage.
+- [x] Extend the public Project Radar with accessible text search and live status counts without changing its backend contract; verified with 39 passing tests, type-check, formatting, build, and a desktop Project Radar screenshot.

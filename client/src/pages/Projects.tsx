@@ -2,6 +2,10 @@ import { ArrowUpRight, CircleDot, Radar, Sparkles } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "wouter";
 import { PublicFrame } from "@/components/PublicFrame";
+import {
+  filterWorkspaceProjects,
+  type WorkspaceStatus,
+} from "@/lib/projectFilters";
 import { trpc } from "@/lib/trpc";
 
 type ProjectStatus = "all" | "idea" | "active" | "shipped" | "paused";
@@ -23,6 +27,7 @@ const statusLabels = {
 
 export default function Projects() {
   const [filter, setFilter] = useState<ProjectStatus>("all");
+  const [search, setSearch] = useState("");
   const {
     data: projects,
     isLoading,
@@ -30,11 +35,24 @@ export default function Projects() {
   } = trpc.projects.publicList.useQuery();
   const visibleProjects = useMemo(
     () =>
-      (projects ?? []).filter(project =>
-        filter === "all" ? true : project.status === filter
+      filterWorkspaceProjects(
+        projects ?? [],
+        filter as WorkspaceStatus,
+        search
       ),
-    [filter, projects]
+    [filter, projects, search]
   );
+  const statusCounts = useMemo(() => {
+    const counts = {
+      all: projects?.length ?? 0,
+      idea: 0,
+      active: 0,
+      shipped: 0,
+      paused: 0,
+    };
+    for (const project of projects ?? []) counts[project.status] += 1;
+    return counts;
+  }, [projects]);
 
   return (
     <PublicFrame label="04 / PROJECT RADAR">
@@ -91,22 +109,34 @@ export default function Projects() {
               <p className="route-kicker light">PUBLIC TRANSMISSIONS</p>
               <h2 id="public-projects-heading">THE INDEX.</h2>
             </div>
-            <div
-              className="project-filter-list"
-              role="group"
-              aria-label="Filter projects by status"
-            >
-              {filters.map(option => (
-                <button
-                  key={option.value}
-                  className={filter === option.value ? "is-active" : ""}
-                  type="button"
-                  aria-pressed={filter === option.value}
-                  onClick={() => setFilter(option.value)}
-                >
-                  {option.label}
-                </button>
-              ))}
+            <div className="public-project-discovery">
+              <label className="public-project-search">
+                <span>Find a signal</span>
+                <input
+                  value={search}
+                  onChange={event => setSearch(event.target.value)}
+                  type="search"
+                  placeholder="Search the index"
+                  aria-label="Search public projects"
+                />
+              </label>
+              <div
+                className="project-filter-list"
+                role="group"
+                aria-label="Filter projects by status"
+              >
+                {filters.map(option => (
+                  <button
+                    key={option.value}
+                    className={filter === option.value ? "is-active" : ""}
+                    type="button"
+                    aria-pressed={filter === option.value}
+                    onClick={() => setFilter(option.value)}
+                  >
+                    {option.label} <small>{statusCounts[option.value]}</small>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
