@@ -113,3 +113,8 @@
 - [ ] Preserve the existing authentication flow and complete the administrator-view verification after the Supabase rate-limit cooldown.
 - [x] Prepare a realistic XY OS effort estimate covering timeline, code size, dependencies, risks, checkpoints, and rollback boundaries before implementation.
 - [x] Preserve the existing public site, Supabase authentication, and production database while building XY OS in isolated incremental releases.
+- [x] Add the additive projects schema and apply the reviewed migration without changing existing data tables.
+- [x] Add the public Project Radar route, truthful empty state, status filters, responsive orbit visual, and shared navigation entry.
+- [x] Add the protected private Project Workspace with bounded project creation and server-side ownership checks.
+- [x] Add Project Radar validation tests, feature-flag rollback support, implementation plan, and responsive visual verification.
+- [ ] Create and merge the XY OS delivery pull request, deploy it to production, and verify the invited administrator account shows ADMIN VIEW.
