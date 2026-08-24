@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { getSessionSameSite } from "./_core/cookies";
 import { ENV, validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
-import { isTeamAdmin } from "./supabaseAuth";
+import { isTeamAdmin, roleForSupabaseEmail } from "./supabaseAuth";
 
 function createResponse() {
   const values = new Map<string, string>();
@@ -95,5 +95,13 @@ describe("production security configuration", () => {
     expect(ENV.teamAdminEmail).toBe("mantisdarling@proton.me");
     expect(isTeamAdmin(" MANTISDARLING@PROTON.ME ")).toBe(true);
     expect(isTeamAdmin("member@example.com")).toBe(false);
+  });
+
+  it("resolves the verified administrator identity authoritatively", () => {
+    expect(roleForSupabaseEmail(" MANTISDARLING@PROTON.ME ")).toBe("admin");
+    expect(roleForSupabaseEmail("member@example.com")).toBe("user");
+    expect(
+      roleForSupabaseEmail("leader@example.com", "leader@example.com")
+    ).toBe("admin");
   });
 });
