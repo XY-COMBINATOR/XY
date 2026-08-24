@@ -108,7 +108,7 @@
 - [x] Fix any application-side duplicate request behavior and add regression coverage before the next deployment.
 - [ ] Verify that the exact `TEAMADMINEMAIL` account can sign in on production and is mapped to administrator access, with a visible role confirmation or documented database check.
 - [x] Add a focused operator verification note for administrator-role confirmation after Supabase magic-link sign-in.
-- [ ] Diagnose why the authenticated `mantisdarling@proton.me` account is displayed as MEMBER instead of ADMIN in production, checking exact configured identity, claims, and persisted role mapping.
+- [ ] Diagnose why the authenticated `mantisdarling@proton.me` account is displayed as MEMBER instead of ADMIN in production, including live JWT identity, persisted user role, and evidence for whether deployment configuration or session freshness is responsible.
 - [x] Define the next flagship feature: a cinematic XY OS that combines a public project radar with a private team command center, creative experiment lab, and live team presence.
 - [ ] Preserve the existing authentication flow and complete the administrator-view verification after the Supabase rate-limit cooldown.
 - [x] Prepare a realistic XY OS effort estimate covering timeline, code size, dependencies, risks, checkpoints, and rollback boundaries before implementation.
@@ -130,3 +130,6 @@
 - [x] Merge the inline-handler fix and verify the production route now returns safe 400 and 405 responses instead of 404 or FUNCTION_INVOCATION_FAILED.
 - [x] Re-audit the authentication, role mapping, Vercel route, environment handling, and regression coverage; no code defect was found in the ADMIN/MEMBER mapping, and the configured-email regression test passes.
 - [x] Perform a repository-wide re-audit of frontend, backend, database, authentication, routing, security, dependencies, tests, and deployment configuration while sign-in is rate-limited; 38 tests, type-check, formatting, build, coverage, dependency audit, and unsafe-pattern scans completed.
+- [ ] Verify the exact production mantisdarling@proton.me sign-in after cooldown and capture the live dashboard role label or safe auth.me result.
+- [ ] Inspect the persisted production user role for the signed-in Supabase subject through a safe administrator check.
+- [ ] Document whether the MEMBER-to-ADMIN discrepancy came from deployment configuration, email-claim mismatch, or session freshness using live evidence.
