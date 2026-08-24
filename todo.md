@@ -86,3 +86,4 @@
 - [x] Add focused regression coverage for the Team access navigation entry so the new public sign-in path is explicitly verified.
 - [x] Capture and review desktop screenshots of the homepage and `/dashboard` showing the Team access entry point and sign-in screen.
 - [x] Document review of the captured desktop screenshots: homepage shows the Team access link; signed-out `/dashboard` shows the Supabase sign-in screen, with local environment configuration noted separately.
+- [ ] Resolve the Pull Request #4 conflict against the current `main` branch, rerun checks, and keep the existing one-review protection in place.
