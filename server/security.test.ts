@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { validateProductionEnvironment } from "./_core/env";
 import { getSessionSameSite } from "./_core/cookies";
+import { ENV, validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
 import { isTeamAdmin } from "./supabaseAuth";
 
@@ -89,5 +89,11 @@ describe("production security configuration", () => {
   it("assigns the administrator role only to the configured email", () => {
     expect(isTeamAdmin("leader@example.com", "leader@example.com")).toBe(true);
     expect(isTeamAdmin("member@example.com", "leader@example.com")).toBe(false);
+  });
+
+  it("recognizes the configured TEAMADMINEMAIL value after normalization", () => {
+    expect(ENV.teamAdminEmail).toBe("mantisdarling@proton.me");
+    expect(isTeamAdmin(" MANTISDARLING@PROTON.ME ")).toBe(true);
+    expect(isTeamAdmin("member@example.com")).toBe(false);
   });
 });
