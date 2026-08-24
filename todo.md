@@ -121,4 +121,6 @@
 - [x] Diagnose why the merged same-origin Auth fallback now returns generic `Unable to send a sign-in link.` in production instead of a safe actionable Supabase error.
 - [x] Correct the fallback configuration and add regression coverage; local tests, type-check, formatting, and build pass.
 - [ ] Merge Pull Request #8 after resolving its conflicts, redeploy production, and verify the live magic-link request succeeds.
+- [ ] Merge the isolated Auth-function fix, redeploy production, and verify the live endpoint returns a safe response instead of FUNCTION_INVOCATION_FAILED.
 - [ ] Verify the invited `TEAMADMINEMAIL` account shows ADMIN VIEW after the production redeploy.
+- [x] Fix the explicit Vercel Auth function so it does not initialize unrelated database configuration; local tests, type-check, formatting, and build pass.
