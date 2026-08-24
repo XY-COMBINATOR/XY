@@ -155,19 +155,43 @@ export default function Projects() {
             </div>
           )}
 
-          {!isLoading && !isError && visibleProjects.length === 0 && (
-            <div className="project-index-empty">
-              <CircleDot className="project-empty-pulse" size={20} />
-              <h3>No public signals yet.</h3>
-              <p>
-                The radar is ready. A team member can publish the first verified
-                project from the private control room.
-              </p>
-              <Link className="text-link" href="/dashboard">
-                Enter control room <ArrowUpRight size={16} />
-              </Link>
-            </div>
-          )}
+          {!isLoading &&
+            !isError &&
+            visibleProjects.length === 0 &&
+            projects?.length === 0 && (
+              <div className="project-index-empty">
+                <CircleDot className="project-empty-pulse" size={20} />
+                <h3>No public signals yet.</h3>
+                <p>
+                  The radar is ready. A team member can publish the first
+                  verified project from the private control room.
+                </p>
+                <Link className="text-link" href="/dashboard">
+                  Enter control room <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            )}
+
+          {!isLoading &&
+            !isError &&
+            visibleProjects.length === 0 &&
+            (projects?.length ?? 0) > 0 && (
+              <div className="project-index-empty" role="status">
+                <CircleDot className="project-empty-pulse" size={20} />
+                <h3>No matching signals.</h3>
+                <p>Try another status or clear the search field.</p>
+                <button
+                  className="text-link"
+                  type="button"
+                  onClick={() => {
+                    setSearch("");
+                    setFilter("all");
+                  }}
+                >
+                  Clear radar filters <ArrowUpRight size={16} />
+                </button>
+              </div>
+            )}
 
           {visibleProjects.length > 0 && (
             <div className="public-project-grid">
