@@ -140,4 +140,6 @@
 - [x] Deliver the authoritative role-resolution fix to production; Pull Request #12 merged, live dashboard returns 200, and the Auth endpoint returns safe 400 validation without sending an email.
 - [ ] Verify ADMIN VIEW with a fresh sign-in after the email cooldown.
 - [x] Harden the authenticated role response so a verified configured administrator cannot silently render MEMBER_VIEW, without requiring repeated sign-in attempts; preserve server-side authorization and fail closed for unknown identities. Added a designated-owner fallback for missing/empty deployment configuration, with 41 tests, type-check, formatting, and build passing.
-- [ ] Deliver the no-repeat role hardening to production and verify the existing authenticated session reflects ADMIN VIEW.
+- [x] Deliver the no-repeat role hardening to production; Pull Request #13 merged, live dashboard returns 200, and the Auth endpoint returns safe 400 validation without sending another email.
+- [ ] Verify the existing authenticated session reflects ADMIN VIEW with one final observation.
+- [x] Trace the already authenticated production session through `auth.me`, verified JWT claims, database subject lookup, and role serialization, then correct the exact remaining mismatch without another sign-in request: the browser session was valid while database readback could return null, causing `auth.me` to be treated as MEMBER. Verified-claims identity now remains available with the correct role. 42 tests, type-check, formatting, and build pass.
