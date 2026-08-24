@@ -92,7 +92,7 @@
 - [x] Re-check Pull Request #4 and verify the GitHub Quality workflow passes with the formatting gate cleared.
 - [x] Diagnose the live Supabase magic-link `Failed to fetch` error and identify whether the cause is production variables, Supabase URL configuration, browser policy, or runtime routing.
 - [ ] Repair the production sign-in failure, rerun tests and build, and verify the live magic-link request reaches Supabase.
-- [ ] Replace the non-resolving Supabase URL in Vercel with the exact Project URL copied from the Supabase dashboard, then redeploy and verify magic-link sign-in.
+- [x] Confirm the Supabase Project URL was already correct; identify the stale Vercel CSP hostname as the actual cause instead of changing the URL.
 - [x] Verify the live Supabase publishable key and request behavior after replacing the URL did not resolve `Failed to fetch`; do not repeat unverified configuration changes.
 - [x] Confirm Vercel's sensitive `TEAMADMINEMAIL` edit view is write-only and guide the operator to cancel inspection, preserve the saved value, redeploy, and test sign-in.
 - [x] Reproduce the latest live `Failed to fetch` report without changing `TEAMADMINEMAIL`, then isolate the failing request path and exact runtime configuration.
@@ -101,4 +101,6 @@
 - [ ] Test production sign-in with the actual invited and accepted member email, recording either the success notice or the exact remaining Supabase Auth error.
 - [ ] If an Auth error remains after CSP repair, surface the exact Supabase error in the UI and document the required Supabase dashboard setting or user state.
 - [x] Correct the stale Supabase hostname in Vercel's static Content-Security-Policy and add a regression assertion; verify with tests, TypeScript, build, and formatting.
-- [ ] Resolve the current PR #5 `todo.md` merge conflict against GitHub `main`, push the reconciled branch, and rerun required checks.
+- [x] Resolve the current PR #5 `todo.md` merge conflict against GitHub `main`, push the reconciled branch, and rerun required checks.
+- [ ] Perform a full repository and live-production authentication audit, including all client, server, CSP, Vercel routing, Supabase, and error-handling paths.
+- [ ] Apply and verify the confirmed fix for the remaining production `Failed to fetch` failure, then deliver it through GitHub and Vercel.

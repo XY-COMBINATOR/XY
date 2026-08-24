@@ -5,6 +5,7 @@ export const ENV = {
   oAuthServerUrl: process.env.OAUTH_SERVER_URL ?? "",
   ownerOpenId: process.env.OWNER_OPEN_ID ?? "",
   supabaseUrl: process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? "",
+  supabasePublishableKey: process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "",
   teamAdminEmail: process.env.TEAMADMINEMAIL ?? "",
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
@@ -13,7 +14,12 @@ export const ENV = {
 
 type ProductionEnvironment = Pick<
   typeof ENV,
-  "appId" | "cookieSecret" | "databaseUrl" | "isProduction" | "supabaseUrl"
+  | "appId"
+  | "cookieSecret"
+  | "databaseUrl"
+  | "isProduction"
+  | "supabaseUrl"
+  | "supabasePublishableKey"
 >;
 
 /** Refuse to start an internet-facing API with placeholder production credentials. */
@@ -26,6 +32,7 @@ export function validateProductionEnvironment(
     ["DATABASE_URL", environment.databaseUrl],
     ["JWT_SECRET", environment.cookieSecret],
     ["VITE_SUPABASE_URL", environment.supabaseUrl],
+    ["VITE_SUPABASE_PUBLISHABLE_KEY", environment.supabasePublishableKey],
   ] as const;
   const missing = requiredValues
     .filter(([, value]) => !value.trim())
