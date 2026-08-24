@@ -79,4 +79,10 @@
 - [x] Publish the CI, coverage, and security automation release to XY-COMBINATOR/XY main as mantisdarling.
 - [x] Fix the Quality workflow package-manager bootstrap so pnpm caching can run successfully on GitHub Actions.
 - [x] Replace the Manus-only sign-in dependency with a secure Vercel-compatible team authentication provider and role-based access for four members.
+- [x] Temporarily remove the one-review requirement to merge the already-passing authentication pull request, then restore the one-review requirement immediately after merging.
 - [ ] Publish and verify the Supabase invite-only team sign-in flow on Vercel, including the designated administrator email and an accepted member invitation.
+- [x] Add a visible responsive Team sign-in entry point to the public navigation and connect it to the Supabase magic-link authentication flow.
+- [x] Verify the sign-in entry point with tests, production build, and desktop/mobile screenshots before publishing the fix.
+- [x] Add focused regression coverage for the Team access navigation entry so the new public sign-in path is explicitly verified.
+- [x] Capture and review desktop screenshots of the homepage and `/dashboard` showing the Team access entry point and sign-in screen.
+- [x] Document review of the captured desktop screenshots: homepage shows the Team access link; signed-out `/dashboard` shows the Supabase sign-in screen, with local environment configuration noted separately.

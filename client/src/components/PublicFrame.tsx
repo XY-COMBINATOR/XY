@@ -11,6 +11,7 @@ const navigation = [
   ["People", "/people"],
   ["Capabilities", "/capabilities"],
   ["Contact", "/contact"],
+  ["Team access", "/dashboard"],
 ] as const;
 
 export function PublicFrame({ children, label }: { children: React.ReactNode; label: string }) {

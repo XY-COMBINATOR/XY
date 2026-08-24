@@ -114,6 +114,7 @@ export default function Home() {
           <Link href="/people">People</Link>
           <ScrollLink href="#projects">Projects</ScrollLink>
           <Link href="/capabilities">Capabilities</Link>
+          <Link href="/dashboard">Team access</Link>
         </nav>
 
         <div className="header-actions">
@@ -135,10 +136,17 @@ export default function Home() {
           ["People", "#team"],
           ["Projects", "#projects"],
           ["Capabilities", "#capabilities"],
+          ["Team access", "/dashboard"],
         ].map(([label, href]) => (
-          <ScrollLink key={label} href={href} className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
-            {label}<ArrowUpRight size={24} />
-          </ScrollLink>
+          href.startsWith("#") ? (
+            <ScrollLink key={label} href={href} className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
+              {label}<ArrowUpRight size={24} />
+            </ScrollLink>
+          ) : (
+            <Link key={label} href={href} className="mobile-menu-link" onClick={() => setMenuOpen(false)}>
+              {label}<ArrowUpRight size={24} />
+            </Link>
+          )
         ))}
       </div>
 
