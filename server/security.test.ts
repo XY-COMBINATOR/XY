@@ -118,7 +118,6 @@ describe("production security configuration", () => {
     expect(user.openId).toBe("supabase:subject-1");
     expect(user.role).toBe("admin");
   });
-
   it("resolves the verified administrator identity authoritatively", () => {
     const configuredAdmin = "mantisdarling@proton.me";
     expect(

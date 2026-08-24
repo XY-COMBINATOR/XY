@@ -46,7 +46,6 @@ export function verifiedUserFromClaims(
     lastSignedIn: now,
   };
 }
-
 export function isTeamAdmin(
   email: string,
   adminEmail = ENV.teamAdminEmail || designatedAdminEmail
