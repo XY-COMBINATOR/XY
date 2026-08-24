@@ -71,13 +71,12 @@ describe("Vercel deployment routing", () => {
       "utf8"
     );
 
-    expect(route).toContain(
-      'import { handleMagicLinkRequest } from "../../server/authProxy"'
-    );
-    expect(route).toContain('import { ENV } from "../../server/_core/env"');
-    expect(route).toContain("setRouteHeaders(response)");
+    expect(route).not.toContain('from "../../server/app"');
+    expect(route).not.toContain('from "../../server/authProxy"');
+    expect(route).toContain("setRouteHeaders(response, projectUrl)");
     expect(route).toContain("export default async function handler");
-    expect(route).toContain("handleMagicLinkRequest(request.body)");
+    expect(route).toContain('if (request.method !== "POST")');
+    expect(route).toContain("sendMagicLink(request.body)");
   });
 
   it("prevents CDN caching of dynamic API responses", async () => {

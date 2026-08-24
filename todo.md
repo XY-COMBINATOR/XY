@@ -126,3 +126,5 @@
 - [x] Fix the explicit Vercel Auth function so it does not initialize unrelated database configuration; local tests, type-check, formatting, and build pass.
 - [x] Replace the Vercel Auth entry point with a dependency-light direct Node handler; local tests, type-check, formatting, and build pass.
 - [ ] Merge the direct-handler fix, redeploy production, and verify the live Auth endpoint returns a safe response.
+- [x] Inline the bounded Auth request logic in the Vercel entry point so invocation cannot fail on server module resolution; local tests, type-check, formatting, and build pass.
+- [ ] Merge the inline-handler fix, redeploy production, and verify the live Auth endpoint returns a safe response.
