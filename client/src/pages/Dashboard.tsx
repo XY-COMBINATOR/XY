@@ -1,6 +1,7 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import { DashboardOfflineIndicator } from "@/components/DashboardOfflineIndicator";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
 
 /**
  * A small authenticated landing route proves the dashboard shell's loading
@@ -9,11 +10,13 @@ import { useAuth } from "@/_core/hooks/useAuth";
  */
 function DashboardContent() {
   const { user } = useAuth();
+  const { data: serverUser } = trpc.auth.me.useQuery();
+  const isAdmin = serverUser?.role === "admin";
 
   return (
     <section className="dashboard-overview">
       <DashboardOfflineIndicator />
-      <p>CONTROL ROOM / MEMBER VIEW</p>
+      <p>CONTROL ROOM / {isAdmin ? "ADMIN" : "MEMBER"} VIEW</p>
       <h1>
         WELCOME BACK,
         <br />
