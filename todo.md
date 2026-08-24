@@ -120,11 +120,11 @@
 - [x] Create and merge the XY OS delivery pull request and verify the new Project Radar and dashboard routes are live in production; administrator role confirmation remains a separate operator check.
 - [x] Diagnose why the merged same-origin Auth fallback now returns generic `Unable to send a sign-in link.` in production instead of a safe actionable Supabase error.
 - [x] Correct the fallback configuration and add regression coverage; local tests, type-check, formatting, and build pass.
-- [ ] Merge Pull Request #8 after resolving its conflicts, redeploy production, and verify the live magic-link request succeeds.
-- [ ] Merge the isolated Auth-function fix, redeploy production, and verify the live endpoint returns a safe response instead of FUNCTION_INVOCATION_FAILED.
+- [x] Merge Pull Request #8; the first production probe exposed a follow-up serverless invocation issue documented and fixed below.
+- [x] Merge the isolated Auth-function fix; the next production probe exposed a follow-up handler issue documented and fixed below.
 - [ ] Verify the invited `TEAMADMINEMAIL` account shows ADMIN VIEW after the production redeploy.
 - [x] Fix the explicit Vercel Auth function so it does not initialize unrelated database configuration; local tests, type-check, formatting, and build pass.
 - [x] Replace the Vercel Auth entry point with a dependency-light direct Node handler; local tests, type-check, formatting, and build pass.
-- [ ] Merge the direct-handler fix, redeploy production, and verify the live Auth endpoint returns a safe response.
+- [x] Merge the direct-handler fix; the next production probe exposed a remaining invocation issue documented and fixed below.
 - [x] Inline the bounded Auth request logic in the Vercel entry point so invocation cannot fail on server module resolution; local tests, type-check, formatting, and build pass.
-- [ ] Merge the inline-handler fix, redeploy production, and verify the live Auth endpoint returns a safe response.
+- [x] Merge the inline-handler fix and verify the production route now returns safe 400 and 405 responses instead of 404 or FUNCTION_INVOCATION_FAILED.
