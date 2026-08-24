@@ -146,4 +146,4 @@
 - [x] Deliver the claims-derived authenticated-user fallback to production; Pull Request #14 merged, live dashboard returns 200, and the Auth endpoint returns safe 400 validation without sending another email.
 - [ ] Refresh the existing authenticated dashboard once and confirm the visible ADMIN VIEW label.
 - [x] Diagnose the remaining production server-to-Supabase configuration or JWT verification mismatch after an existing authenticated session still showed MEMBER VIEW; the server could not verify the browser token through its configured JWKS path, so it now uses a bounded Supabase Auth API verification fallback. 42 tests, type-check, formatting, and build pass.
-- [ ] Deliver the provider-backed verification fallback to production and verify the existing session resolves ADMIN VIEW.
+- [x] Deliver the provider-backed verification fallback to production; Pull Request #15 merged after Quality, CodeQL, dependency review, and Vercel checks passed. One existing-session refresh remains for visible ADMIN VIEW confirmation.
