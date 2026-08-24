@@ -78,7 +78,8 @@ describe("Vercel deployment routing", () => {
       'import { applySecurityHeaders } from "../../server/security"'
     );
     expect(route).toContain("registerAuthProxy(app)");
-    expect(route).toContain("export default app");
+    expect(route).toContain("export default function handler");
+    expect(route).toContain("return app(request, response)");
   });
 
   it("prevents CDN caching of dynamic API responses", async () => {

@@ -16,4 +16,9 @@ app.use(applySecurityHeaders);
 app.use(express.json({ limit: "32kb", strict: true }));
 registerAuthProxy(app);
 
-export default app;
+export default function handler(
+  request: express.Request,
+  response: express.Response
+) {
+  return app(request, response);
+}
