@@ -65,6 +65,16 @@ describe("Vercel deployment routing", () => {
     );
   });
 
+  it("ships an explicit same-origin magic-link function route", async () => {
+    const route = await readFile(
+      path.join(projectPath, "api/auth/magic-link.ts"),
+      "utf8"
+    );
+
+    expect(route).toContain('import { apiApp } from "../../server/app"');
+    expect(route).toContain("export default apiApp");
+  });
+
   it("prevents CDN caching of dynamic API responses", async () => {
     const configText = await readFile(
       path.join(projectPath, "vercel.json"),

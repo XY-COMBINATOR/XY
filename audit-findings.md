@@ -13,3 +13,7 @@ On the correct production origin, same-origin `/dashboard` and `/assets/index-Dl
 ## Administrator-role verification runbook
 
 After the role-confirmation release is deployed, sign in with the exact email configured as `TEAMADMINEMAIL`. The protected dashboard should display `CONTROL ROOM / ADMIN VIEW`; any other authenticated team member should display `CONTROL ROOM / MEMBER VIEW`. The label is derived from the server-side role returned by the authenticated `auth.me` procedure, so the administrator email itself is never exposed to the browser. If the designated account shows MEMBER, verify that its email matches `TEAMADMINEMAIL` after normalization and sign out and in again to refresh the server-side user record.
+
+## XY OS production verification
+
+After PR #7 merged, production `/projects` loads the new Project Radar with `WORK IN ORBIT`, live signal filters, and the public project index. Production `/dashboard` loads the current invite-only sign-in screen without a route or server error. The sandbox browser is signed out, so administrator role verification remains operator-owned and must use the invited production email after the email cooldown.
