@@ -29,3 +29,7 @@ The remaining discrepancy is not a code defect demonstrated by this audit. The s
 ## New production evidence
 
 A read-only query against the connected project database found zero persisted `users` rows for `mantisdarling@proton.me` (`matchingUsers: 0`, `persistedRole: NULL`). This is important: the role-mapping code itself is exact and tested, but the server cannot return `admin` for an email that has not been upserted. A fresh production sign-in should cause `authenticateSupabaseRequest` to verify the Supabase access token and upsert the user with `role: admin` when the production `TEAMADMINEMAIL` matches. If the row remains absent after one fresh sign-in, the next diagnosis target is the production JWT verification or database environment, not the dashboard label.
+
+## Authoritative role-resolution fix
+
+The MEMBER VIEW regression was corrected in Pull Request #12. The server now derives the role from the freshly verified Supabase email on every authenticated request, returns that role even when a persisted record is stale, and continues to upsert the role and enforce server-side admin gates. The pull request passed Quality, CodeQL, dependency review, and Vercel checks and merged to `main`. Post-merge probes returned HTTP 200 for `/dashboard` and HTTP 400 for an empty Auth request, confirming the live route is deployed and safely validating input without sending an email. A fresh sign-in is still required to prove the visible `ADMIN VIEW` label and capture the exact production subject-level persistence evidence.

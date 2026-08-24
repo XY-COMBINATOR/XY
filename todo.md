@@ -137,4 +137,5 @@
 - [x] Extend the public Project Radar with accessible text search and live status counts without changing its backend contract; verified with 39 passing tests, type-check, formatting, build, and a desktop Project Radar screenshot.
 - [x] Improve the public Project Radar no-match state with a clear-search action while preserving the truthful empty state for a genuinely empty index; verified with 39 tests, type-check, formatting, and production build.
 - [x] Fix the live MEMBER VIEW regression by making the verified Supabase email authoritative for role resolution on every authenticated request, while retaining database persistence and server-side admin gates; 40 tests, type-check, formatting, and build pass.
-- [ ] Deliver the authoritative role-resolution fix to production and verify ADMIN VIEW with a fresh sign-in.
+- [x] Deliver the authoritative role-resolution fix to production; Pull Request #12 merged, live dashboard returns 200, and the Auth endpoint returns safe 400 validation without sending an email.
+- [ ] Verify ADMIN VIEW with a fresh sign-in after the email cooldown.
