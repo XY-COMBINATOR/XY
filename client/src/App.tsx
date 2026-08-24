@@ -11,12 +11,14 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
+import { xyOsEnabled } from "./lib/featureFlags";
 
 const Capabilities = lazy(() => import("./pages/Capabilities"));
 const Collective = lazy(() => import("./pages/Collective"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const People = lazy(() => import("./pages/People"));
+const Projects = lazy(() => import("./pages/Projects"));
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -26,6 +28,7 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/collective" component={Collective} />
         <Route path="/people" component={People} />
+        {xyOsEnabled && <Route path="/projects" component={Projects} />}
         <Route path="/capabilities" component={Capabilities} />
         <Route path="/contact" component={Contact} />
         <Route path="/dashboard" component={Dashboard} />

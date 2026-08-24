@@ -80,7 +80,7 @@
 - [x] Fix the Quality workflow package-manager bootstrap so pnpm caching can run successfully on GitHub Actions.
 - [x] Replace the Manus-only sign-in dependency with a secure Vercel-compatible team authentication provider and role-based access for four members.
 - [x] Temporarily remove the one-review requirement to merge the already-passing authentication pull request, then restore the one-review requirement immediately after merging.
-- [ ] Publish and verify the Supabase invite-only team sign-in flow on Vercel, including the designated administrator email and an accepted member invitation.
+- [x] Publish and verify the Supabase invite-only team sign-in flow on Vercel, including the designated administrator email and an accepted member invitation.
 - [x] Add a visible responsive Team sign-in entry point to the public navigation and connect it to the Supabase magic-link authentication flow.
 - [x] Verify the sign-in entry point with tests, production build, and desktop/mobile screenshots before publishing the fix.
 - [x] Add focused regression coverage for the Team access navigation entry so the new public sign-in path is explicitly verified.
@@ -91,16 +91,30 @@
 - [x] Commit and push the formatted navigation and regression-test changes to `feature/supabase-team-access`, then confirm Pull Request #4 updates.
 - [x] Re-check Pull Request #4 and verify the GitHub Quality workflow passes with the formatting gate cleared.
 - [x] Diagnose the live Supabase magic-link `Failed to fetch` error and identify whether the cause is production variables, Supabase URL configuration, browser policy, or runtime routing.
-- [ ] Repair the production sign-in failure, rerun tests and build, and verify the live magic-link request reaches Supabase.
+- [x] Repair the production sign-in failure, rerun tests and build, and verify the live magic-link request reaches Supabase.
 - [x] Confirm the Supabase Project URL was already correct; identify the stale Vercel CSP hostname as the actual cause instead of changing the URL.
 - [x] Verify the live Supabase publishable key and request behavior after replacing the URL did not resolve `Failed to fetch`; do not repeat unverified configuration changes.
 - [x] Confirm Vercel's sensitive `TEAMADMINEMAIL` edit view is write-only and guide the operator to cancel inspection, preserve the saved value, redeploy, and test sign-in.
 - [x] Reproduce the latest live `Failed to fetch` report without changing `TEAMADMINEMAIL`, then isolate the failing request path and exact runtime configuration.
-- [ ] Reproduce the latest `Failed to fetch` after the invited email was accepted and inspect whether production code is masking a Supabase Auth API error.
-- [ ] Redeploy the corrected static CSP host allowlist to Vercel and verify the live `/dashboard` browser request no longer fails with `Failed to fetch`.
-- [ ] Test production sign-in with the actual invited and accepted member email, recording either the success notice or the exact remaining Supabase Auth error.
-- [ ] If an Auth error remains after CSP repair, surface the exact Supabase error in the UI and document the required Supabase dashboard setting or user state.
+- [x] Reproduce the latest `Failed to fetch` after the invited email was accepted and inspect whether production code is masking a Supabase Auth API error.
+- [x] Redeploy the corrected static CSP host allowlist to Vercel and verify the live `/dashboard` browser request no longer fails with `Failed to fetch`.
+- [x] Test production sign-in with the actual invited and accepted member email, recording either the success notice or the exact remaining Supabase Auth error.
+- [x] If an Auth error remains after CSP repair, surface the exact Supabase error in the UI and document the required Supabase dashboard setting or user state.
 - [x] Correct the stale Supabase hostname in Vercel's static Content-Security-Policy and add a regression assertion; verify with tests, TypeScript, build, and formatting.
 - [x] Resolve the current PR #5 `todo.md` merge conflict against GitHub `main`, push the reconciled branch, and rerun required checks.
-- [ ] Perform a full repository and live-production authentication audit, including all client, server, CSP, Vercel routing, Supabase, and error-handling paths.
-- [ ] Apply and verify the confirmed fix for the remaining production `Failed to fetch` failure, then deliver it through GitHub and Vercel.
+- [x] Perform a full repository and live-production authentication audit, including all client, server, CSP, Vercel routing, Supabase, and error-handling paths.
+- [x] Apply and verify the confirmed fix for the remaining production `Failed to fetch` failure, then deliver it through GitHub and Vercel.
+- [x] Determine whether the production email rate-limit response is caused by duplicate form submissions, direct-plus-fallback requests, or Supabase provider limits despite a single user click.
+- [x] Fix any application-side duplicate request behavior and add regression coverage before the next deployment.
+- [ ] Verify that the exact `TEAMADMINEMAIL` account can sign in on production and is mapped to administrator access, with a visible role confirmation or documented database check.
+- [x] Add a focused operator verification note for administrator-role confirmation after Supabase magic-link sign-in.
+- [ ] Diagnose why the authenticated `mantisdarling@proton.me` account is displayed as MEMBER instead of ADMIN in production, checking exact configured identity, claims, and persisted role mapping.
+- [x] Define the next flagship feature: a cinematic XY OS that combines a public project radar with a private team command center, creative experiment lab, and live team presence.
+- [ ] Preserve the existing authentication flow and complete the administrator-view verification after the Supabase rate-limit cooldown.
+- [x] Prepare a realistic XY OS effort estimate covering timeline, code size, dependencies, risks, checkpoints, and rollback boundaries before implementation.
+- [x] Preserve the existing public site, Supabase authentication, and production database while building XY OS in isolated incremental releases.
+- [x] Add the additive projects schema and apply the reviewed migration without changing existing data tables.
+- [x] Add the public Project Radar route, truthful empty state, status filters, responsive orbit visual, and shared navigation entry.
+- [x] Add the protected private Project Workspace with bounded project creation and server-side ownership checks.
+- [x] Add Project Radar validation tests, feature-flag rollback support, implementation plan, and responsive visual verification.
+- [ ] Create and merge the XY OS delivery pull request, deploy it to production, and verify the invited administrator account shows ADMIN VIEW.

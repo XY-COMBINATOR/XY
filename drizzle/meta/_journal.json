@@ -22,6 +22,13 @@
       "when": 1787106678566,
       "tag": "0002_spicy_warlock",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1787542862576,
+      "tag": "0003_misty_random",
+      "breakpoints": true
     }
   ]
 }

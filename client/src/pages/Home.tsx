@@ -3,6 +3,7 @@
  * Asymmetric editorial lanes, Space Grotesk display type, signal-red motion and a paper/ink material system.
  */
 import { useEffect, useState } from "react";
+import { xyOsEnabled } from "@/lib/featureFlags";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
 import { assetUrl } from "@/lib/assets";
@@ -155,7 +156,7 @@ export default function Home() {
         <nav className="desktop-nav" aria-label="Primary navigation">
           <Link href="/collective">Collective</Link>
           <Link href="/people">People</Link>
-          <ScrollLink href="#projects">Projects</ScrollLink>
+          {xyOsEnabled && <Link href="/projects">Projects</Link>}
           <Link href="/capabilities">Capabilities</Link>
           <Link href="/dashboard">Team access</Link>
         </nav>
@@ -196,32 +197,34 @@ export default function Home() {
         {[
           ["About", "#about"],
           ["People", "#team"],
-          ["Projects", "#projects"],
+          ["Projects", "/projects"],
           ["Capabilities", "#capabilities"],
           ["Team access", "/dashboard"],
-        ].map(([label, href]) =>
-          href.startsWith("#") ? (
-            <ScrollLink
-              key={label}
-              href={href}
-              className="mobile-menu-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-              <ArrowUpRight size={24} />
-            </ScrollLink>
-          ) : (
-            <Link
-              key={label}
-              href={href}
-              className="mobile-menu-link"
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-              <ArrowUpRight size={24} />
-            </Link>
-          )
-        )}
+        ]
+          .filter(([, href]) => xyOsEnabled || href !== "/projects")
+          .map(([label, href]) =>
+            href.startsWith("#") ? (
+              <ScrollLink
+                key={label}
+                href={href}
+                className="mobile-menu-link"
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+                <ArrowUpRight size={24} />
+              </ScrollLink>
+            ) : (
+              <Link
+                key={label}
+                href={href}
+                className="mobile-menu-link"
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+                <ArrowUpRight size={24} />
+              </Link>
+            )
+          )}
       </div>
 
       <main id="top">

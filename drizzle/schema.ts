@@ -1,4 +1,12 @@
-import { index, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+  index,
+  int,
+  mysqlEnum,
+  mysqlTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 /**
  * Core user table backing auth flow.
@@ -45,11 +53,50 @@ export type NewContactRequest = typeof contactRequests.$inferInsert;
  * serves requests from more than one application instance. Source addresses are
  * represented only by a SHA-256 hash to avoid persisting raw network data.
  */
-export const contactRateWindows = mysqlTable("contactRateWindows", {
-  sourceHash: varchar("sourceHash", { length: 64 }).primaryKey(),
-  attempts: int("attempts").notNull().default(0),
-  windowEndsAt: timestamp("windowEndsAt").notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-}, table => [index("contactRateWindowsWindowEndsAtIndex").on(table.windowEndsAt)]);
+export const contactRateWindows = mysqlTable(
+  "contactRateWindows",
+  {
+    sourceHash: varchar("sourceHash", { length: 64 }).primaryKey(),
+    attempts: int("attempts").notNull().default(0),
+    windowEndsAt: timestamp("windowEndsAt").notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [index("contactRateWindowsWindowEndsAtIndex").on(table.windowEndsAt)]
+);
 
 export type ContactRateWindow = typeof contactRateWindows.$inferSelect;
+
+/**
+ * Project Radar records. Visibility is enforced in server procedures, while
+ * the public fields remain bounded so the radar cannot overfetch or expose
+ * private drafts accidentally.
+ */
+export const projects = mysqlTable(
+  "projects",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    slug: varchar("slug", { length: 96 }).notNull().unique(),
+    title: varchar("title", { length: 120 }).notNull(),
+    codename: varchar("codename", { length: 48 }).notNull(),
+    summary: varchar("summary", { length: 280 }).notNull(),
+    description: text("description").notNull(),
+    status: mysqlEnum("status", ["idea", "active", "shipped", "paused"])
+      .default("idea")
+      .notNull(),
+    visibility: mysqlEnum("visibility", ["public", "private"])
+      .default("private")
+      .notNull(),
+    progress: int("progress").default(0).notNull(),
+    leadOpenId: varchar("leadOpenId", { length: 64 }),
+    accent: varchar("accent", { length: 16 }).default("#ef3d32").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [
+    index("projectsVisibilityStatusIndex").on(table.visibility, table.status),
+    index("projectsLeadOpenIdIndex").on(table.leadOpenId),
+  ]
+);
+
+export type Project = typeof projects.$inferSelect;
+export type InsertProject = typeof projects.$inferInsert;
