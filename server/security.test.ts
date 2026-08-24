@@ -65,6 +65,7 @@ describe("production security configuration", () => {
         databaseUrl: "database",
         isProduction: true,
         supabaseUrl: "https://project.supabase.co",
+        supabasePublishableKey: "sb_publishable_test",
       })
     ).toThrow("JWT_SECRET must contain at least 32 characters");
 
@@ -75,6 +76,7 @@ describe("production security configuration", () => {
         databaseUrl: "",
         isProduction: true,
         supabaseUrl: "",
+        supabasePublishableKey: "",
       })
     ).toThrow("Missing required production environment variables");
   });

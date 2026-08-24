@@ -56,14 +56,46 @@ export function useAuth(options?: UseAuthOptions) {
       throw new Error("Team sign-in is not configured yet.");
     }
 
-    const { error: linkError } = await supabase.auth.signInWithOtp({
-      email: email.trim().toLowerCase(),
-      options: {
-        shouldCreateUser: false,
-        emailRedirectTo: window.location.origin,
-      },
+    const normalizedEmail = email.trim().toLowerCase();
+
+    try {
+      const { error: linkError } = await supabase.auth.signInWithOtp({
+        email: normalizedEmail,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: window.location.origin,
+        },
+      });
+      if (linkError) throw linkError;
+      return;
+    } catch (linkError) {
+      // Some browsers or networks block direct cross-origin Supabase requests.
+      // Retry through our same-origin server route only for a real fetch failure;
+      // Supabase AuthApiError responses must remain visible to the user.
+      if (
+        !(linkError instanceof TypeError) ||
+        !/fetch/i.test(linkError.message)
+      ) {
+        throw linkError;
+      }
+    }
+
+    const fallback = await fetch("/api/auth/magic-link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ email: normalizedEmail }),
     });
-    if (linkError) throw linkError;
+    const payload = (await fallback.json().catch(() => null)) as {
+      error?: unknown;
+    } | null;
+    if (!fallback.ok) {
+      const message =
+        typeof payload?.error === "string"
+          ? payload.error
+          : "Unable to send a sign-in link.";
+      throw new Error(message);
+    }
   }, []);
 
   const state = useMemo(() => {

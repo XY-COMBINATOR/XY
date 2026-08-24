@@ -6,6 +6,7 @@ import { createContext } from "./_core/context";
 import { registerStorageProxy } from "./_core/storageProxy";
 import { validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
+import { registerAuthProxy } from "./authProxy";
 
 function requestBodyError(error: unknown) {
   if (!error || typeof error !== "object") return null;
@@ -36,6 +37,7 @@ export function createApiApp() {
   app.use(express.json({ limit: "256kb", strict: true }));
   app.use(express.urlencoded({ limit: "32kb", extended: false }));
   registerStorageProxy(app);
+  registerAuthProxy(app);
   app.use(
     "/api/trpc",
     createExpressMiddleware({ router: appRouter, createContext })
