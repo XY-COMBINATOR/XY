@@ -100,3 +100,5 @@
 - [ ] Redeploy the corrected static CSP host allowlist to Vercel and verify the live `/dashboard` browser request no longer fails with `Failed to fetch`.
 - [ ] Test production sign-in with the actual invited and accepted member email, recording either the success notice or the exact remaining Supabase Auth error.
 - [ ] If an Auth error remains after CSP repair, surface the exact Supabase error in the UI and document the required Supabase dashboard setting or user state.
+- [x] Correct the stale Supabase hostname in Vercel's static Content-Security-Policy and add a regression assertion; verify with tests, TypeScript, build, and formatting.
+- [ ] Resolve the current PR #5 `todo.md` merge conflict against GitHub `main`, push the reconciled branch, and rerun required checks.
