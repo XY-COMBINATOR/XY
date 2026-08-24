@@ -71,8 +71,14 @@ describe("Vercel deployment routing", () => {
       "utf8"
     );
 
-    expect(route).toContain('import { apiApp } from "../../server/app"');
-    expect(route).toContain("export default apiApp");
+    expect(route).toContain(
+      'import { registerAuthProxy } from "../../server/authProxy"'
+    );
+    expect(route).toContain(
+      'import { applySecurityHeaders } from "../../server/security"'
+    );
+    expect(route).toContain("registerAuthProxy(app)");
+    expect(route).toContain("export default app");
   });
 
   it("prevents CDN caching of dynamic API responses", async () => {
