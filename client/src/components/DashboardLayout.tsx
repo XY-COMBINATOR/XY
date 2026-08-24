@@ -19,14 +19,14 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { startLogin } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
 import { apiFailureMessage } from "@/lib/apiFailure";
 import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
-import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
+import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Page 1", path: "/" },
@@ -47,14 +47,19 @@ export default function DashboardLayout({
     const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
     return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
   });
-  const { error, loading, refresh, user } = useAuth();
+  const { error, isConfigured, loading, refresh, sendMagicLink, user } =
+    useAuth();
+  const [email, setEmail] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
+  const [signInError, setSignInError] = useState<string | null>(null);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
   }, [sidebarWidth]);
 
   if (loading) {
-    return <DashboardLayoutSkeleton />
+    return <DashboardLayoutSkeleton />;
   }
 
   if (error) {
@@ -62,7 +67,11 @@ export default function DashboardLayout({
       <div className="dashboard-query-recovery" role="alert">
         <div>
           <p>SESSION UNAVAILABLE</p>
-          <h1>THE CONTROL ROOM<br />IS OUT OF RANGE.</h1>
+          <h1>
+            THE CONTROL ROOM
+            <br />
+            IS OUT OF RANGE.
+          </h1>
           <span>{apiFailureMessage(error)}</span>
           <Button onClick={() => void refresh()}>Retry connection</Button>
         </div>
@@ -71,6 +80,25 @@ export default function DashboardLayout({
   }
 
   if (!user) {
+    const requestLink = async () => {
+      setNotice(null);
+      setSignInError(null);
+      setIsSending(true);
+
+      try {
+        await sendMagicLink(email);
+        setNotice("Check your email for a one-time team sign-in link.");
+      } catch (requestError) {
+        setSignInError(
+          requestError instanceof Error
+            ? requestError.message
+            : "Unable to send a sign-in link."
+        );
+      } finally {
+        setIsSending(false);
+      }
+    };
+
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
@@ -79,16 +107,46 @@ export default function DashboardLayout({
               Sign in to continue
             </h1>
             <p className="text-sm text-muted-foreground text-center max-w-sm">
-              Access to this dashboard requires authentication. Continue to launch the login flow.
+              Team members receive a secure one-time email link. Public sign-ups
+              are disabled.
             </p>
           </div>
-          <Button
-            onClick={() => startLogin()}
-            size="lg"
-            className="w-full shadow-lg hover:shadow-xl transition-all"
-          >
-            Sign in
-          </Button>
+          {isConfigured ? (
+            <form
+              className="w-full space-y-3"
+              onSubmit={event => {
+                event.preventDefault();
+                void requestLink();
+              }}
+            >
+              <Input
+                type="email"
+                value={email}
+                onChange={event => setEmail(event.target.value)}
+                placeholder="member@example.com"
+                required
+                autoComplete="email"
+              />
+              <Button
+                type="submit"
+                size="lg"
+                disabled={isSending}
+                className="w-full shadow-lg hover:shadow-xl transition-all"
+              >
+                {isSending ? "Sending link…" : "Email me a sign-in link"}
+              </Button>
+              {notice ? <p className="text-sm text-center">{notice}</p> : null}
+              {signInError ? (
+                <p className="text-sm text-destructive text-center">
+                  {signInError}
+                </p>
+              ) : null}
+            </form>
+          ) : (
+            <p className="text-sm text-destructive text-center">
+              Team sign-in is not configured yet.
+            </p>
+          )}
         </div>
       </div>
     );
@@ -219,12 +277,23 @@ function DashboardLayoutContent({
                 <button className="flex items-center gap-3 rounded-lg px-1 py-1 hover:bg-accent/50 transition-colors w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                   <Avatar className="h-9 w-9 border shrink-0">
                     <AvatarFallback className="text-xs font-medium">
-                      {user?.name?.charAt(0).toUpperCase()}
+                      {(
+                        user?.user_metadata?.full_name ??
+                        user?.user_metadata?.name ??
+                        user?.email ??
+                        "M"
+                      )
+                        .toString()
+                        .charAt(0)
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
                     <p className="text-sm font-medium truncate leading-none">
-                      {user?.name || "-"}
+                      {user?.user_metadata?.full_name ??
+                        user?.user_metadata?.name ??
+                        user?.email?.split("@")[0] ??
+                        "-"}
                     </p>
                     <p className="text-xs text-muted-foreground truncate mt-1.5">
                       {user?.email || "-"}

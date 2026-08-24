@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { ENV } from "./_core/env";
 
 /**
  * Apply a narrow security baseline before routes handle data. The production
@@ -26,6 +27,7 @@ export function applySecurityHeaders(
   }
 
   if (process.env.NODE_ENV === "production") {
+    const supabaseConnectSource = ENV.supabaseUrl ? ` ${ENV.supabaseUrl}` : "";
     response.setHeader(
       "Strict-Transport-Security",
       "max-age=31536000; includeSubDomains"
@@ -42,7 +44,7 @@ export function applySecurityHeaders(
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com",
         "script-src 'self'",
-        "connect-src 'self'",
+        `connect-src 'self'${supabaseConnectSource}`,
         "upgrade-insecure-requests",
       ].join("; ")
     );

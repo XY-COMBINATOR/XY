@@ -1,15 +1,15 @@
 import { trpc } from "@/lib/trpc";
-import { COOKIE_NAME, UNAUTHED_ERR_MSG } from '@shared/const';
+import { UNAUTHED_ERR_MSG } from "@shared/const";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
-import { startLogin } from "./const";
 import "./index.css";
 import { assetUrl } from "./lib/assets";
 import { apiTimeoutMs } from "./lib/apiFailure";
 import { ApiRecoveryNotice } from "./components/ApiRecoveryNotice";
+import { supabase } from "./lib/supabase";
 
 const queryClient = new QueryClient();
 
@@ -28,8 +28,6 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
   const isUnauthorized = error.message === UNAUTHED_ERR_MSG;
 
   if (!isUnauthorized) return;
-
-  startLogin();
 };
 
 queryClient.getQueryCache().subscribe(event => {
@@ -53,25 +51,10 @@ const trpcClient = trpc.createClient({
     httpBatchLink({
       url: "/api/trpc",
       transformer: superjson,
-      headers() {
-        // Browser-accessible tokens are restricted to development preview only.
-        // Production requests rely on the HttpOnly session cookie instead.
-        if (!import.meta.env.DEV) return {};
-
-        try {
-          const raw = sessionStorage.getItem("manus-cookie");
-          if (raw) {
-            const prefix = `${COOKIE_NAME}=`;
-            const pair = raw.split(";").find(s => s.trim().startsWith(prefix));
-            const token = pair?.trim().slice(prefix.length);
-            if (token) {
-              return { Authorization: `Bearer ${token}` };
-            }
-          }
-        } catch {
-          // sessionStorage unavailable
-        }
-        return {};
+      async headers() {
+        const { data } = (await supabase?.auth.getSession()) ?? { data: null };
+        const token = data?.session?.access_token;
+        return token ? { Authorization: `Bearer ${token}` } : {};
       },
       fetch(input, init) {
         // Abort slow serverless calls rather than leaving a pending UI forever.
