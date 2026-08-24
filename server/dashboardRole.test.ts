@@ -6,9 +6,13 @@ describe("dashboardRoleLabel", () => {
     expect(dashboardRoleLabel(undefined, true)).toBe("SYNCING");
   });
 
-  it("shows ADMIN only after the server returns the administrator role", () => {
+  it("does not present a failed or anonymous server response as MEMBER", () => {
+    expect(dashboardRoleLabel(null, false)).toBe("UNAVAILABLE");
+    expect(dashboardRoleLabel(undefined, false, true)).toBe("UNAVAILABLE");
+  });
+
+  it("shows ADMIN or MEMBER only after the server returns that role", () => {
     expect(dashboardRoleLabel("admin", false)).toBe("ADMIN");
     expect(dashboardRoleLabel("user", false)).toBe("MEMBER");
-    expect(dashboardRoleLabel(undefined, false)).toBe("MEMBER");
   });
 });
