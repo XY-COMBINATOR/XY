@@ -8,6 +8,7 @@ import {
   type WorkspaceStatus,
 } from "@/lib/projectFilters";
 import { trpc } from "@/lib/trpc";
+import { dashboardRoleLabel } from "@shared/dashboardRole";
 
 const workspaceFilters: Array<{ value: WorkspaceStatus; label: string }> = [
   { value: "all", label: "All" },
@@ -32,12 +33,12 @@ const emptyDraft = {
   description: "",
 };
 
-function ProjectWorkspace() {
+function ProjectWorkspace({ enabled }: { enabled: boolean }) {
   const {
     data: projects,
     isLoading,
     isError,
-  } = trpc.projects.teamList.useQuery();
+  } = trpc.projects.teamList.useQuery(undefined, { enabled });
   const [workspaceFilter, setWorkspaceFilter] =
     useState<WorkspaceStatus>("all");
   const [workspaceSearch, setWorkspaceSearch] = useState("");
@@ -279,14 +280,21 @@ function ProjectWorkspace() {
 }
 
 function DashboardContent() {
-  const { user } = useAuth();
-  const { data: serverUser } = trpc.auth.me.useQuery();
-  const isAdmin = serverUser?.role === "admin";
+  const { user, loading: authLoading } = useAuth();
+  const serverRoleQuery = trpc.auth.me.useQuery(undefined, {
+    enabled: !authLoading && Boolean(user),
+    staleTime: 0,
+  });
+  const serverUser = serverRoleQuery.data;
+  const roleLabel = dashboardRoleLabel(
+    serverUser?.role,
+    serverRoleQuery.isLoading
+  );
 
   return (
     <section className="dashboard-overview">
       <DashboardOfflineIndicator />
-      <p>CONTROL ROOM / {isAdmin ? "ADMIN" : "MEMBER"} VIEW</p>
+      <p>CONTROL ROOM / {roleLabel} VIEW</p>
       <h1>
         WELCOME BACK,
         <br />
@@ -315,7 +323,7 @@ function DashboardContent() {
           </p>
         </article>
       </div>
-      <ProjectWorkspace />
+      <ProjectWorkspace enabled={!authLoading && Boolean(user)} />
     </section>
   );
 }
