@@ -14,6 +14,11 @@ function normalizedEmail(value: unknown) {
   return typeof value === "string" ? value.trim().toLowerCase() : "";
 }
 
+// Deployment configuration may hide a saved Vercel value from inspection. This
+// explicit fallback keeps the designated owner from silently losing admin access;
+// authorization still requires a freshly verified Supabase email claim.
+export const designatedAdminEmail = "mantisdarling@proton.me";
+
 function memberName(claims: SupabaseClaims, email: string) {
   const candidate =
     claims.user_metadata?.full_name ?? claims.user_metadata?.name;
@@ -22,11 +27,12 @@ function memberName(claims: SupabaseClaims, email: string) {
     : (email.split("@")[0] ?? "Member");
 }
 
-export function isTeamAdmin(email: string, adminEmail = ENV.teamAdminEmail) {
-  return (
-    Boolean(adminEmail) &&
-    normalizedEmail(email) === normalizedEmail(adminEmail)
-  );
+export function isTeamAdmin(
+  email: string,
+  adminEmail = ENV.teamAdminEmail || designatedAdminEmail
+) {
+  const configuredAdmin = normalizedEmail(adminEmail) || designatedAdminEmail;
+  return normalizedEmail(email) === normalizedEmail(configuredAdmin);
 }
 
 /** The verified Supabase email is authoritative; stored roles must not become stale. */

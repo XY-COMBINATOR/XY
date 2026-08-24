@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 import { getSessionSameSite } from "./_core/cookies";
 import { ENV, validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
-import { isTeamAdmin, roleForSupabaseEmail } from "./supabaseAuth";
+import {
+  designatedAdminEmail,
+  isTeamAdmin,
+  roleForSupabaseEmail,
+} from "./supabaseAuth";
 
 function createResponse() {
   const values = new Map<string, string>();
@@ -97,6 +101,11 @@ describe("production security configuration", () => {
       true
     );
     expect(isTeamAdmin("member@example.com", configuredAdmin)).toBe(false);
+  });
+
+  it("keeps the designated verified owner admin without a secret fallback", () => {
+    expect(roleForSupabaseEmail(designatedAdminEmail, "")).toBe("admin");
+    expect(roleForSupabaseEmail("member@example.com", "")).toBe("user");
   });
 
   it("resolves the verified administrator identity authoritatively", () => {

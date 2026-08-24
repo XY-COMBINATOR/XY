@@ -139,3 +139,5 @@
 - [x] Fix the live MEMBER VIEW regression by making the verified Supabase email authoritative for role resolution on every authenticated request, while retaining database persistence and server-side admin gates; 40 tests, type-check, formatting, and build pass.
 - [x] Deliver the authoritative role-resolution fix to production; Pull Request #12 merged, live dashboard returns 200, and the Auth endpoint returns safe 400 validation without sending an email.
 - [ ] Verify ADMIN VIEW with a fresh sign-in after the email cooldown.
+- [x] Harden the authenticated role response so a verified configured administrator cannot silently render MEMBER_VIEW, without requiring repeated sign-in attempts; preserve server-side authorization and fail closed for unknown identities. Added a designated-owner fallback for missing/empty deployment configuration, with 41 tests, type-check, formatting, and build passing.
+- [ ] Deliver the no-repeat role hardening to production and verify the existing authenticated session reflects ADMIN VIEW.
