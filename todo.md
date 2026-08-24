@@ -88,5 +88,5 @@
 - [x] Document review of the captured desktop screenshots: homepage shows the Team access link; signed-out `/dashboard` shows the Supabase sign-in screen, with local environment configuration noted separately.
 - [x] Resolve the Pull Request #4 conflict against the current `main` branch, rerun checks, and keep the existing one-review protection in place.
 - [x] Fix the Team access change formatting in the three flagged source files, rerun the GitHub-equivalent formatting check, and update Pull Request #4.
-- [ ] Commit and push the formatted navigation and regression-test changes to `feature/supabase-team-access`, then confirm Pull Request #4 updates.
-- [ ] Re-check Pull Request #4 and verify the GitHub Quality workflow passes with the formatting gate cleared.
+- [x] Commit and push the formatted navigation and regression-test changes to `feature/supabase-team-access`, then confirm Pull Request #4 updates.
+- [x] Re-check Pull Request #4 and verify the GitHub Quality workflow passes with the formatting gate cleared.
