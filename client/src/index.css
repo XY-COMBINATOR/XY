@@ -3171,9 +3171,19 @@ img {
   background: rgba(243, 239, 233, 0.2);
 }
 .public-project-card {
+  display: block;
   min-height: 290px;
   padding: 1.4rem;
+  color: inherit;
   background: #171717;
+  text-decoration: none;
+  transition:
+    background-color 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+}
+.public-project-card:hover {
+  background: #202020;
+  transform: translateY(-3px);
 }
 .public-project-card-topline {
   display: flex;
@@ -3212,6 +3222,117 @@ img {
     500 0.56rem/1 "DM Mono",
     monospace;
   text-transform: uppercase;
+}
+.public-project-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.2rem;
+  color: var(--xy-red);
+  font:
+    500 0.57rem/1 "DM Mono",
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.project-detail-page {
+  min-height: calc(100svh - 82px);
+}
+.project-detail-back {
+  margin-bottom: clamp(4rem, 9vw, 8rem);
+}
+.project-detail-card {
+  max-width: 1180px;
+  padding: clamp(1.5rem, 5vw, 5rem);
+  background: #171717;
+}
+.project-detail-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(243, 239, 233, 0.18);
+}
+.project-detail-heading h1 {
+  max-width: 760px;
+  margin: 1.2rem 0 0;
+  font:
+    600 clamp(3rem, 8vw, 8rem) / 0.82 "Space Grotesk",
+    sans-serif;
+  letter-spacing: -0.09em;
+}
+.project-detail-heading h1 i {
+  color: var(--xy-red);
+  font-style: normal;
+}
+.project-detail-signal {
+  display: grid;
+  flex: 0 0 min(190px, 100%);
+  gap: 0.7rem;
+  padding: 1.1rem;
+  border: 1px solid;
+}
+.project-detail-signal span,
+.project-detail-label {
+  color: rgba(243, 239, 233, 0.48);
+  font:
+    500 0.58rem/1 "DM Mono",
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.project-detail-signal strong {
+  color: var(--xy-paper);
+  font:
+    500 2.6rem/0.9 "Space Grotesk",
+    sans-serif;
+  letter-spacing: -0.07em;
+}
+.project-detail-signal .public-project-progress {
+  margin-top: 0.8rem;
+}
+.project-detail-body {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
+  gap: clamp(2rem, 8vw, 8rem);
+  padding: clamp(2rem, 5vw, 5rem) 0;
+}
+.project-detail-label {
+  margin: 0 0 1rem;
+  color: var(--xy-red);
+}
+.project-detail-summary,
+.project-detail-description {
+  margin: 0;
+  color: rgba(243, 239, 233, 0.82);
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  line-height: 1.45;
+}
+.project-detail-description {
+  max-width: 620px;
+  color: rgba(243, 239, 233, 0.68);
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+.project-detail-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(243, 239, 233, 0.18);
+  color: rgba(243, 239, 233, 0.48);
+  font:
+    500 0.58rem/1.4 "DM Mono",
+    monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.project-detail-footer span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--xy-red);
 }
 .project-workspace {
   max-width: 1180px;
@@ -3514,6 +3635,21 @@ img {
   }
   .public-project-grid {
     grid-template-columns: 1fr;
+  }
+  .project-detail-heading,
+  .project-detail-body,
+  .project-detail-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .project-detail-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .project-detail-signal {
+    width: 100%;
+    flex-basis: auto;
   }
   .project-filter-list {
     justify-content: flex-start;

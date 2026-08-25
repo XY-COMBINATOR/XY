@@ -196,7 +196,11 @@ export default function Projects() {
           {visibleProjects.length > 0 && (
             <div className="public-project-grid">
               {visibleProjects.map(project => (
-                <article className="public-project-card" key={project.id}>
+                <Link
+                  className="public-project-card"
+                  href={`/projects/${project.slug}`}
+                  key={project.id}
+                >
                   <div className="public-project-card-topline">
                     <span>/{project.codename}</span>
                     <span style={{ color: project.accent }}>
@@ -219,7 +223,10 @@ export default function Projects() {
                   <small>
                     {project.progress}% / {project.status}
                   </small>
-                </article>
+                  <span className="public-project-card-link">
+                    Open brief <ArrowUpRight size={14} />
+                  </span>
+                </Link>
               ))}
             </div>
           )}
