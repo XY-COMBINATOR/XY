@@ -1,4 +1,4 @@
-/** Vercel filesystem route: forwards every API path to the shared Express app. */
-import { apiApp } from "../server/app";
+import { vercelApiApp } from "../server/vercelApp";
 
-export default apiApp;
+/** Vercel filesystem fallback for API paths not matched by a more specific entry. */
+export default vercelApiApp;

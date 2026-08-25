@@ -25,17 +25,23 @@ type ProductionEnvironment = Pick<
 /** Refuse to start an internet-facing API with placeholder production credentials. */
 export function validateProductionEnvironment(
   environment: ProductionEnvironment = ENV,
-  options: { requireLegacySessionSecret?: boolean } = {}
+  options: {
+    requireDatabase?: boolean;
+    requireLegacySessionSecret?: boolean;
+  } = {}
 ) {
   if (!environment.isProduction) return;
 
+  const requireDatabase = options.requireDatabase ?? true;
   const requireLegacySessionSecret =
     options.requireLegacySessionSecret ?? false;
   const requiredValues: Array<readonly [string, string]> = [
-    ["DATABASE_URL", environment.databaseUrl],
     ["VITE_SUPABASE_URL", environment.supabaseUrl],
     ["VITE_SUPABASE_PUBLISHABLE_KEY", environment.supabasePublishableKey],
   ];
+  if (requireDatabase) {
+    requiredValues.unshift(["DATABASE_URL", environment.databaseUrl]);
+  }
   if (requireLegacySessionSecret) {
     requiredValues.push(["JWT_SECRET", environment.cookieSecret]);
   }
