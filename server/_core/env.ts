@@ -24,16 +24,21 @@ type ProductionEnvironment = Pick<
 
 /** Refuse to start an internet-facing API with placeholder production credentials. */
 export function validateProductionEnvironment(
-  environment: ProductionEnvironment = ENV
+  environment: ProductionEnvironment = ENV,
+  options: { requireLegacySessionSecret?: boolean } = {}
 ) {
   if (!environment.isProduction) return;
 
-  const requiredValues = [
+  const requireLegacySessionSecret =
+    options.requireLegacySessionSecret ?? false;
+  const requiredValues: Array<readonly [string, string]> = [
     ["DATABASE_URL", environment.databaseUrl],
-    ["JWT_SECRET", environment.cookieSecret],
     ["VITE_SUPABASE_URL", environment.supabaseUrl],
     ["VITE_SUPABASE_PUBLISHABLE_KEY", environment.supabasePublishableKey],
-  ] as const;
+  ];
+  if (requireLegacySessionSecret) {
+    requiredValues.push(["JWT_SECRET", environment.cookieSecret]);
+  }
   const missing = requiredValues
     .filter(([, value]) => !value.trim())
     .map(([name]) => name);
@@ -44,7 +49,7 @@ export function validateProductionEnvironment(
     );
   }
 
-  if (environment.cookieSecret.length < 32) {
+  if (requireLegacySessionSecret && environment.cookieSecret.length < 32) {
     throw new Error(
       "JWT_SECRET must contain at least 32 characters in production."
     );

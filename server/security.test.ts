@@ -64,14 +64,17 @@ describe("applySecurityHeaders", () => {
 describe("production security configuration", () => {
   it("rejects incomplete and weak production environment configuration", () => {
     expect(() =>
-      validateProductionEnvironment({
-        appId: "app",
-        cookieSecret: "short",
-        databaseUrl: "database",
-        isProduction: true,
-        supabaseUrl: "https://project.supabase.co",
-        supabasePublishableKey: "sb_publishable_test",
-      })
+      validateProductionEnvironment(
+        {
+          appId: "app",
+          cookieSecret: "short",
+          databaseUrl: "database",
+          isProduction: true,
+          supabaseUrl: "https://project.supabase.co",
+          supabasePublishableKey: "sb_publishable_test",
+        },
+        { requireLegacySessionSecret: true }
+      )
     ).toThrow("JWT_SECRET must contain at least 32 characters");
 
     expect(() =>
