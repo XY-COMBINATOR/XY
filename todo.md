@@ -163,3 +163,5 @@
 - [ ] Deliver the proven code correction through protected checks and live route probes.
 - [x] Remove the Vercel tRPC cold-start dependency on database validation while preserving strict database checks for the normal Node server, then add route-level regression coverage and protected delivery.
 - [ ] Diagnose the post-merge Vercel health 500, make public serverless startup resilient to missing optional runtime configuration while keeping protected procedures fail closed, then add regression coverage and redeploy verification.
+- [ ] Perform the requested normal squash merge of PR #22 without bypassing branch protection, then checkpoint and verify the live production tRPC and dashboard paths.
+- [x] Replace the standalone Vercel tRPC wrapper with the lower-level native Node HTTP handler, validate all API entries, and deliver the follow-up through protected review.

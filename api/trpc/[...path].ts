@@ -1,7 +1,4 @@
-import { vercelApiApp } from "../../server/vercelApp";
-import type { Request, Response } from "express";
+import vercelTrpcHandler from "../../server/vercelTrpc";
 
-/** Forward every nested tRPC procedure through the shared secure API app. */
-export default function handler(request: Request, response: Response) {
-  return vercelApiApp(request, response);
-}
+/** Forward every nested tRPC procedure through the native Node tRPC handler. */
+export default vercelTrpcHandler;
