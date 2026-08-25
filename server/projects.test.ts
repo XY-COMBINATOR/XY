@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { projectInput } from "./routers";
 import { filterWorkspaceProjects } from "../client/src/lib/projectFilters";
+
+const dbPath = resolve(import.meta.dirname, "./db.ts");
 
 describe("Project Radar input", () => {
   const validProject = {
@@ -54,6 +58,18 @@ describe("Project Radar input", () => {
     );
     expect(filterWorkspaceProjects(projects, "all", "released")[0]?.id).toBe(2);
     expect(filterWorkspaceProjects(projects, "paused", "")).toHaveLength(0);
+  });
+
+  it("degrades project indexes safely when the database is unavailable", () => {
+    const source = readFileSync(dbPath, "utf8");
+
+    expect(source).toContain(
+      'console.warn("[Projects] Public index unavailable:"'
+    );
+    expect(source).toContain(
+      'console.warn("[Projects] Team index unavailable:"'
+    );
+    expect(source).toContain("return [];");
   });
 
   it("rejects overlong or unsafe project content", () => {

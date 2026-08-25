@@ -92,23 +92,33 @@ export async function listPublicProjects(): Promise<Project[]> {
   const db = await getDb();
   if (!db) return [];
 
-  return db
-    .select()
-    .from(projects)
-    .where(eq(projects.visibility, "public"))
-    .orderBy(desc(projects.updatedAt))
-    .limit(48);
+  try {
+    return await db
+      .select()
+      .from(projects)
+      .where(eq(projects.visibility, "public"))
+      .orderBy(desc(projects.updatedAt))
+      .limit(48);
+  } catch (error) {
+    console.warn("[Projects] Public index unavailable:", error);
+    return [];
+  }
 }
 
 export async function listProjectsForTeam(): Promise<Project[]> {
   const db = await getDb();
   if (!db) return [];
 
-  return db
-    .select()
-    .from(projects)
-    .orderBy(desc(projects.updatedAt))
-    .limit(100);
+  try {
+    return await db
+      .select()
+      .from(projects)
+      .orderBy(desc(projects.updatedAt))
+      .limit(100);
+  } catch (error) {
+    console.warn("[Projects] Team index unavailable:", error);
+    return [];
+  }
 }
 
 export async function createProject(project: InsertProject): Promise<Project> {
