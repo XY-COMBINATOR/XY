@@ -93,13 +93,16 @@ describe("Vercel deployment routing", () => {
       "utf8"
     );
 
-    expect(rootRoute).toContain('from "../server/vercelTrpc"');
+    expect(rootRoute).toContain('from "../server/vercelTrpc.js"');
+    expect(rootRoute).not.toContain('from "../server/vercelTrpc";');
     expect(rootRoute).toContain("export default vercelTrpcHandler");
     expect(rootRoute).not.toContain("vercelApiApp");
-    expect(catchAllRoute).toContain('from "../../server/vercelTrpc"');
+    expect(catchAllRoute).toContain('from "../../server/vercelTrpc.js"');
+    expect(catchAllRoute).not.toContain('from "../../server/vercelTrpc";');
     expect(catchAllRoute).toContain("export default vercelTrpcHandler");
     expect(catchAllRoute).not.toContain("vercelApiApp");
-    expect(apiFallbackRoute).toContain('from "../server/vercelTrpc"');
+    expect(apiFallbackRoute).toContain('from "../server/vercelTrpc.js"');
+    expect(apiFallbackRoute).not.toContain('from "../server/vercelTrpc";');
     expect(apiFallbackRoute).toContain("export default vercelTrpcHandler");
     expect(apiFallbackRoute).not.toContain("vercelApiApp");
   });
