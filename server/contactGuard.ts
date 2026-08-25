@@ -27,10 +27,16 @@ export function createInquiryGuard(options: GuardOptions = {}) {
     const now = Date.now();
     prune(now);
     const current = records.get(source);
-    const record = !current || current.expiresAt <= now ? { attempts: 0, expiresAt: now + windowMs } : current;
+    const record =
+      !current || current.expiresAt <= now
+        ? { attempts: 0, expiresAt: now + windowMs }
+        : current;
 
     if (record.attempts >= limit) {
-      throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Please wait before sending another enquiry." });
+      throw new TRPCError({
+        code: "TOO_MANY_REQUESTS",
+        message: "Please wait before sending another enquiry.",
+      });
     }
 
     record.attempts += 1;
@@ -54,7 +60,12 @@ export function hashInquirySource(source: string) {
 export async function guardInquiryDistributed(source: string) {
   const now = new Date();
   const windowEndsAt = new Date(now.getTime() + 15 * 60 * 1000);
-  const accepted = await recordContactAttempt(hashInquirySource(source), now, windowEndsAt, 4);
+  const accepted = await recordContactAttempt(
+    hashInquirySource(source),
+    now,
+    windowEndsAt,
+    4
+  );
 
   if (accepted === null) {
     guardInquiry(source);
@@ -62,6 +73,9 @@ export async function guardInquiryDistributed(source: string) {
   }
 
   if (!accepted) {
-    throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Please wait before sending another enquiry." });
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "Please wait before sending another enquiry.",
+    });
   }
 }
