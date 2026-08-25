@@ -288,6 +288,10 @@ function DashboardContent() {
     staleTime: 0,
   });
   const serverUser = serverRoleQuery.data;
+  const persistedRoleQuery = trpc.auth.persistedRole.useQuery(undefined, {
+    enabled: serverUser?.role === "admin",
+    staleTime: 0,
+  });
   const roleLabel = dashboardRoleLabel(
     serverUser?.role,
     serverRoleQuery.isLoading,
@@ -313,6 +317,16 @@ function DashboardContent() {
           <p>
             Your serverless session is active and ready for future team tools.
           </p>
+          {serverUser?.role === "admin" ? (
+            <small>
+              ROLE RECORD:{" "}
+              {persistedRoleQuery.isLoading
+                ? "CHECKING"
+                : persistedRoleQuery.data?.persisted
+                  ? "PERSISTED ADMIN"
+                  : "CLAIMS VERIFIED"}
+            </small>
+          ) : null}
         </article>
         <article>
           <span>NEXT BUILD</span>

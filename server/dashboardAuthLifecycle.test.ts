@@ -16,5 +16,8 @@ describe("dashboard auth lifecycle", () => {
     expect(source).toContain("trpc.auth.me.useQuery");
     expect(source).toContain("useAuthBoundary");
     expect(source).toContain("enabled: Boolean(sessionUser)");
+    expect(source).toContain("trpc.auth.persistedRole.useQuery");
+    expect(source).toContain('enabled: serverUser?.role === "admin"');
+    expect(source).toContain("PERSISTED ADMIN");
   });
 });
