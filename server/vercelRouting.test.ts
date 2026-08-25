@@ -88,13 +88,20 @@ describe("Vercel deployment routing", () => {
       path.join(projectPath, "api/trpc/[...path].ts"),
       "utf8"
     );
+    const apiFallbackRoute = await readFile(
+      path.join(projectPath, "api/[...path].ts"),
+      "utf8"
+    );
 
-    expect(rootRoute).toContain('from "../server/vercelApp"');
-    expect(rootRoute).toContain("export default function handler");
-    expect(rootRoute).toContain("vercelApiApp(request, response)");
-    expect(catchAllRoute).toContain('from "../../server/vercelApp"');
-    expect(catchAllRoute).toContain("export default function handler");
-    expect(catchAllRoute).toContain("vercelApiApp(request, response)");
+    expect(rootRoute).toContain('from "../server/vercelTrpc"');
+    expect(rootRoute).toContain("export default vercelTrpcHandler");
+    expect(rootRoute).not.toContain("vercelApiApp");
+    expect(catchAllRoute).toContain('from "../../server/vercelTrpc"');
+    expect(catchAllRoute).toContain("export default vercelTrpcHandler");
+    expect(catchAllRoute).not.toContain("vercelApiApp");
+    expect(apiFallbackRoute).toContain('from "../server/vercelTrpc"');
+    expect(apiFallbackRoute).toContain("export default vercelTrpcHandler");
+    expect(apiFallbackRoute).not.toContain("vercelApiApp");
   });
 
   it("prevents CDN caching of dynamic API responses", async () => {
