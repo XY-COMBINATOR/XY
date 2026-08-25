@@ -168,3 +168,4 @@
 - [x] Resolve the Vercel build-time Express type mismatch in the shared tRPC context, cookie helper, and Supabase auth request types without weakening runtime validation.
 - [ ] Resolve the PR #24 merge conflict against the latest main branch, rerun protected checks, and retry the authorized squash merge without bypassing branch protection.
 - [ ] Replace the Vercel Node HTTP adapter with a Fetch-compatible tRPC bridge, add a request/response regression smoke test, and verify the live production invocation failure is removed.
+- [ ] Resolve the PR #25 merge conflict against the latest main branch, rerun protected checks, and retry the authorized squash merge without bypassing branch protection.
