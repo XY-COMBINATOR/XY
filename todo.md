@@ -169,3 +169,4 @@
 - [x] Resolve the PR #24 merge conflict against the latest main branch, rerun protected checks, and retry the authorized squash merge without bypassing branch protection.
 - [ ] Replace the Vercel Node HTTP adapter with a Fetch-compatible tRPC bridge, add a request/response regression smoke test, and verify the live production invocation failure is removed.
 - [x] Resolve the PR #25 merge conflict against the latest main branch, rerun protected checks, and retry the authorized squash merge without bypassing branch protection.
+- [ ] Fix Vercel ESM filesystem-route imports to include `.js` specifiers, add regression assertions for emitted import compatibility, and verify production tRPC health after deployment.
