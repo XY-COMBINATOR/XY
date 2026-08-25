@@ -1,5 +1,6 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AuthBoundaryProvider } from "@/contexts/AuthBoundaryContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -164,9 +165,11 @@ export default function DashboardLayout({
         } as CSSProperties
       }
     >
-      <DashboardLayoutContent setSidebarWidth={setSidebarWidth}>
-        {children}
-      </DashboardLayoutContent>
+      <AuthBoundaryProvider value={{ user }}>
+        <DashboardLayoutContent setSidebarWidth={setSidebarWidth}>
+          {children}
+        </DashboardLayoutContent>
+      </AuthBoundaryProvider>
     </SidebarProvider>
   );
 }
