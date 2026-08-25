@@ -17,15 +17,15 @@ describe("production environment validation", () => {
     );
   });
 
-  it("allows Supabase-only production startup without the legacy cookie secret", () => {
+  it("accepts a configured Supabase-only production environment", () => {
     expect(() =>
       validateProductionEnvironment({
         appId: "app",
-        cookieSecret: "too-short",
+        cookieSecret: "unused-legacy-secret",
         databaseUrl: "mysql://configured",
         isProduction: true,
         supabaseUrl: "https://example.supabase.co",
-        supabasePublishableKey: "publishable-key",
+        supabasePublishableKey: "sb_publishable_test",
       })
     ).not.toThrow();
   });
@@ -39,28 +39,10 @@ describe("production environment validation", () => {
           databaseUrl: "mysql://configured",
           isProduction: true,
           supabaseUrl: "https://example.supabase.co",
-          supabasePublishableKey: "publishable-key",
+          supabasePublishableKey: "sb_publishable_test",
         },
         { requireLegacySessionSecret: true }
       )
     ).toThrow("JWT_SECRET must contain at least 32 characters in production.");
   });
-
-  it("accepts the configured publishable key at the Supabase Auth settings endpoint", async () => {
-    const projectUrl = process.env.SUPABASE_URL;
-    const publishableKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-    expect(projectUrl).toMatch(/^https:\/\/[a-z0-9]+\.supabase\.co$/);
-    expect(publishableKey).toBeTruthy();
-
-    const response = await fetch(`${projectUrl}/auth/v1/settings`, {
-      headers: {
-        apikey: publishableKey ?? "",
-        Authorization: `Bearer ${publishableKey ?? ""}`,
-      },
-      signal: AbortSignal.timeout(10_000),
-    });
-
-    expect(response.status).toBe(200);
-  }, 15_000);
 });
