@@ -1,13 +1,20 @@
-import { createHTTPHandler } from "@trpc/server/adapters/standalone";
-import type { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
+import {
+  createURL,
+  nodeHTTPRequestHandler,
+} from "@trpc/server/adapters/node-http";
+import type {
+  NodeHTTPCreateContextFnOptions,
+  NodeHTTPRequest,
+  NodeHTTPResponse,
+} from "@trpc/server/adapters/node-http";
 import type { Request, Response } from "express";
 import { appRouter } from "./routers";
 import { createContext } from "./_core/context";
 import { ENV } from "./_core/env";
 
 function applyNodeSecurityHeaders(
-  request: CreateHTTPContextOptions["req"],
-  response: CreateHTTPContextOptions["res"],
+  request: NodeHTTPRequest,
+  response: NodeHTTPResponse,
   next: (error?: unknown) => void
 ) {
   response.setHeader("X-Content-Type-Options", "nosniff");
@@ -54,18 +61,37 @@ function applyNodeSecurityHeaders(
   next();
 }
 
-function createNodeContext({ req, res }: CreateHTTPContextOptions) {
+function createNodeContext({
+  req,
+  res,
+}: NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>) {
   return createContext({
     req: req as unknown as Request,
     res: res as unknown as Response,
   });
 }
 
-/** Native Node HTTP handling keeps Vercel tRPC imports independent of Express. */
-export const vercelTrpcHandler = createHTTPHandler({
-  router: appRouter,
-  basePath: "/api/trpc/",
-  maxBodySize: 256 * 1024,
-  middleware: applyNodeSecurityHeaders,
-  createContext: createNodeContext,
-});
+/** Handle Vercel tRPC requests without importing the Express server wrapper. */
+export default async function vercelTrpcHandler(
+  request: NodeHTTPRequest,
+  response: NodeHTTPResponse
+) {
+  const pathname = createURL(request).pathname;
+  const path = pathname.startsWith("/api/trpc/")
+    ? pathname.slice("/api/trpc/".length)
+    : pathname === "/api/trpc"
+      ? ""
+      : pathname.replace(/^\/api\//, "");
+
+  await nodeHTTPRequestHandler({
+    router: appRouter,
+    req: request,
+    res: response,
+    path,
+    maxBodySize: 256 * 1024,
+    middleware: applyNodeSecurityHeaders,
+    createContext: createNodeContext,
+  });
+}
+
+export const vercelTrpcRoute = vercelTrpcHandler;
