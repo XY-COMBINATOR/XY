@@ -125,25 +125,30 @@ async function userFromVerifiedClaims(
 
   const openId = `supabase:${subject}`;
   const verifiedRole = roleForSupabaseEmail(email);
-  await db.upsertUser({
-    openId,
-    email,
-    name: memberName(claims, email),
-    loginMethod: "email-link",
-    role: verifiedRole,
-    lastSignedIn: new Date(),
-  });
+  try {
+    await db.upsertUser({
+      openId,
+      email,
+      name: memberName(claims, email),
+      loginMethod: "email-link",
+      role: verifiedRole,
+      lastSignedIn: new Date(),
+    });
 
-  const storedUser = await db.getUserByOpenId(openId);
-  if (!storedUser) {
-    // A verified session remains authenticated even if the autoscaled database
-    // is temporarily unavailable. Return claims-derived identity so auth.me and
-    // server-side role gates do not silently downgrade the session to MEMBER.
-    return verifiedUserFromClaims(claims, email, subject);
+    const storedUser = await db.getUserByOpenId(openId);
+    if (storedUser) {
+      // Never trust a stale database role over the verified identity on this request.
+      return { ...storedUser, role: verifiedRole };
+    }
+  } catch (error) {
+    // Persistence is useful for history, but it must not turn a verified token
+    // into an unavailable role view when TiDB is slow, cold, or misconfigured.
+    console.error("[Auth] User persistence unavailable:", error);
   }
 
-  // Never trust a stale database role over the verified identity on this request.
-  return { ...storedUser, role: verifiedRole };
+  // A verified session remains authenticated even if database persistence fails.
+  // The exact verified email still authoritatively determines its role.
+  return verifiedUserFromClaims(claims, email, subject);
 }
 
 /** Verify an access token against JWKS, then use Supabase Auth API as a bounded fallback. */

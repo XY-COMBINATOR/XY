@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { getSessionSameSite } from "./_core/cookies";
 import { ENV, validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
@@ -110,6 +111,17 @@ describe("production security configuration", () => {
   it("keeps the designated verified owner admin without a secret fallback", () => {
     expect(roleForSupabaseEmail(designatedAdminEmail, "")).toBe("admin");
     expect(roleForSupabaseEmail("member@example.com", "")).toBe("user");
+  });
+
+  it("keeps database persistence failures from removing verified identity", () => {
+    const source = readFileSync(
+      new URL("./supabaseAuth.ts", import.meta.url),
+      "utf8"
+    );
+    expect(source).toContain("Persistence is useful for history");
+    expect(source).toContain(
+      "return verifiedUserFromClaims(claims, email, subject)"
+    );
   });
 
   it("keeps a verified admin authenticated without database readback", () => {
