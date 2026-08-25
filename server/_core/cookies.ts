@@ -1,5 +1,5 @@
-import type { CookieOptions, Request } from "express";
 import { ENV } from "./env";
+import type { SessionCookieOptions, SessionRequest } from "./httpTypes";
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
@@ -9,7 +9,7 @@ function isIpAddress(host: string) {
   return host.includes(":");
 }
 
-function isSecureRequest(req: Request) {
+function isSecureRequest(req: SessionRequest) {
   if (req.protocol === "https") return true;
 
   const forwardedProto = req.headers["x-forwarded-proto"];
@@ -27,8 +27,8 @@ export function getSessionSameSite(isProduction = ENV.isProduction) {
 }
 
 export function getSessionCookieOptions(
-  req: Request
-): Pick<CookieOptions, "domain" | "httpOnly" | "path" | "sameSite" | "secure"> {
+  req: SessionRequest
+): SessionCookieOptions {
   // const hostname = req.hostname;
   // const shouldSetDomain =
   //   hostname &&
