@@ -73,4 +73,3 @@ export function createApiApp(options: ApiAppOptions = {}) {
 
   return app;
 }
-

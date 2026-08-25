@@ -43,7 +43,9 @@ describe("production environment validation", () => {
         supabaseUrl: "https://example.supabase.co",
         supabasePublishableKey: "sb_publishable_test",
       })
-    ).toThrow("Missing required production environment variables: DATABASE_URL");
+    ).toThrow(
+      "Missing required production environment variables: DATABASE_URL"
+    );
   });
 
   it("still enforces the legacy cookie secret when that mode is enabled", () => {
