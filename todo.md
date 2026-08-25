@@ -162,3 +162,4 @@
 - [x] Verify the Vercel function adapter, tRPC transport, server context, Supabase verification, database fallback, and dashboard query lifecycle with focused tests and a production-mode local API smoke test.
 - [ ] Deliver the proven code correction through protected checks and live route probes.
 - [x] Remove the Vercel tRPC cold-start dependency on database validation while preserving strict database checks for the normal Node server, then add route-level regression coverage and protected delivery.
+- [ ] Diagnose the post-merge Vercel health 500, make public serverless startup resilient to missing optional runtime configuration while keeping protected procedures fail closed, then add regression coverage and redeploy verification.
