@@ -171,3 +171,4 @@
 - [x] Resolve the PR #25 merge conflict against the latest main branch, rerun protected checks, and retry the authorized squash merge without bypassing branch protection.
 - [ ] Fix Vercel ESM filesystem-route imports to include `.js` specifiers, add regression assertions for emitted import compatibility, and verify production tRPC health after deployment.
 - [ ] Add explicit `.js` specifiers throughout the server modules imported by Vercel tRPC, validate the complete emitted import graph, and verify production health.
+- [ ] Replace runtime-reachable `@shared` aliases in the Vercel tRPC graph with explicit relative `.js` imports and verify production health
