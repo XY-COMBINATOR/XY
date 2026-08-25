@@ -107,6 +107,18 @@ describe("Vercel deployment routing", () => {
     expect(apiFallbackRoute).not.toContain("vercelApiApp");
   });
 
+  it("keeps the Vercel tRPC runtime graph free of unresolved aliases", async () => {
+    const runtimeFiles = ["server/routers.ts", "server/_core/trpc.ts"];
+    const contents = await Promise.all(
+      runtimeFiles.map(file => readFile(path.join(projectPath, file), "utf8"))
+    );
+
+    contents.forEach(content => {
+      expect(content).not.toContain('from "@shared/');
+      expect(content).not.toContain("from '@shared/");
+    });
+  });
+
   it("prevents CDN caching of dynamic API responses", async () => {
     const configText = await readFile(
       path.join(projectPath, "vercel.json"),
