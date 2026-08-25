@@ -28,8 +28,14 @@ function requestBodyError(error: unknown) {
  * static middleware allows both the Node server and Vercel Functions to reuse
  * the same validated routes, authentication, throttling, and error handling.
  */
-export function createApiApp() {
-  validateProductionEnvironment();
+export type ApiAppOptions = {
+  requireDatabase?: boolean;
+};
+
+export function createApiApp(options: ApiAppOptions = {}) {
+  validateProductionEnvironment(undefined, {
+    requireDatabase: options.requireDatabase ?? true,
+  });
   const app = express();
   app.set("trust proxy", 1);
   app.disable("x-powered-by");
@@ -68,4 +74,3 @@ export function createApiApp() {
   return app;
 }
 
-export const apiApp = createApiApp();
