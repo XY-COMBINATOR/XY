@@ -1,11 +1,11 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
-import type { User } from "../../drizzle/schema";
-import { authenticateSupabaseRequest } from "../supabaseAuth";
+import type { User } from "../../drizzle/schema.js";
+import { authenticateSupabaseRequest } from "../supabaseAuth.js";
 import type {
   ContextOptions,
   SessionRequest,
   SessionResponse,
-} from "./httpTypes";
+} from "./httpTypes.js";
 
 export type TrpcContext = {
   req: SessionRequest;

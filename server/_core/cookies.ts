@@ -1,5 +1,5 @@
-import { ENV } from "./env";
-import type { SessionCookieOptions, SessionRequest } from "./httpTypes";
+import { ENV } from "./env.js";
+import type { SessionCookieOptions, SessionRequest } from "./httpTypes.js";
 
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 

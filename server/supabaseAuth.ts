@@ -1,8 +1,8 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import type { SessionRequest } from "./_core/httpTypes";
-import type { User } from "../drizzle/schema";
-import * as db from "./db";
-import { ENV } from "./_core/env";
+import type { SessionRequest } from "./_core/httpTypes.js";
+import type { User } from "../drizzle/schema.js";
+import * as db from "./db.js";
+import { ENV } from "./_core/env.js";
 
 type SupabaseClaims = {
   email?: unknown;

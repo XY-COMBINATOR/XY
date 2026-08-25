@@ -1,8 +1,8 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { appRouter } from "./routers";
-import { createContext } from "./_core/context";
-import { ENV } from "./_core/env";
-import type { SessionResponse } from "./_core/httpTypes";
+import { appRouter } from "./routers.js";
+import { createContext } from "./_core/context.js";
+import { ENV } from "./_core/env.js";
+import type { SessionResponse } from "./_core/httpTypes.js";
 
 type HeaderValue = string | string[] | undefined;
 

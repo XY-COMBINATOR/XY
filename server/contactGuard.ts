@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { TRPCError } from "@trpc/server";
-import { recordContactAttempt } from "./db";
+import { recordContactAttempt } from "./db.js";
 
 type GuardRecord = { attempts: number; expiresAt: number };
 type GuardOptions = { limit?: number; windowMs?: number; maxEntries?: number };
