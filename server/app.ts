@@ -30,11 +30,13 @@ function requestBodyError(error: unknown) {
  */
 export type ApiAppOptions = {
   requireDatabase?: boolean;
+  requireSupabase?: boolean;
 };
 
 export function createApiApp(options: ApiAppOptions = {}) {
   validateProductionEnvironment(undefined, {
     requireDatabase: options.requireDatabase ?? true,
+    requireSupabase: options.requireSupabase ?? true,
   });
   const app = express();
   app.set("trust proxy", 1);

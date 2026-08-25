@@ -33,6 +33,22 @@ describe("production environment validation", () => {
     ).not.toThrow();
   });
 
+  it("allows the public serverless bootstrap to start without optional services", () => {
+    expect(() =>
+      validateProductionEnvironment(
+        {
+          appId: "app",
+          cookieSecret: "unused-legacy-secret",
+          databaseUrl: "",
+          isProduction: true,
+          supabaseUrl: "",
+          supabasePublishableKey: "",
+        },
+        { requireDatabase: false, requireSupabase: false }
+      )
+    ).not.toThrow();
+  });
+
   it("keeps database validation enabled by default for the normal Node server", () => {
     expect(() =>
       validateProductionEnvironment({

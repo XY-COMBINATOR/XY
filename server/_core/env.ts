@@ -27,18 +27,23 @@ export function validateProductionEnvironment(
   environment: ProductionEnvironment = ENV,
   options: {
     requireDatabase?: boolean;
+    requireSupabase?: boolean;
     requireLegacySessionSecret?: boolean;
   } = {}
 ) {
   if (!environment.isProduction) return;
 
   const requireDatabase = options.requireDatabase ?? true;
+  const requireSupabase = options.requireSupabase ?? true;
   const requireLegacySessionSecret =
     options.requireLegacySessionSecret ?? false;
-  const requiredValues: Array<readonly [string, string]> = [
-    ["VITE_SUPABASE_URL", environment.supabaseUrl],
-    ["VITE_SUPABASE_PUBLISHABLE_KEY", environment.supabasePublishableKey],
-  ];
+  const requiredValues: Array<readonly [string, string]> = [];
+  if (requireSupabase) {
+    requiredValues.push(
+      ["VITE_SUPABASE_URL", environment.supabaseUrl],
+      ["VITE_SUPABASE_PUBLISHABLE_KEY", environment.supabasePublishableKey]
+    );
+  }
   if (requireDatabase) {
     requiredValues.unshift(["DATABASE_URL", environment.databaseUrl]);
   }
