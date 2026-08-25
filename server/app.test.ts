@@ -1,6 +1,8 @@
 import { createServer } from "node:http";
 import { describe, expect, it } from "vitest";
-import { apiApp } from "./app";
+import { createApiApp } from "./app";
+
+const apiApp = createApiApp();
 
 async function requestApplication(path: string, options?: RequestInit) {
   const server = createServer(apiApp);

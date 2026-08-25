@@ -19,15 +19,33 @@ describe("production environment validation", () => {
 
   it("accepts a configured Supabase-only production environment", () => {
     expect(() =>
+      validateProductionEnvironment(
+        {
+          appId: "app",
+          cookieSecret: "unused-legacy-secret",
+          databaseUrl: "",
+          isProduction: true,
+          supabaseUrl: "https://example.supabase.co",
+          supabasePublishableKey: "sb_publishable_test",
+        },
+        { requireDatabase: false }
+      )
+    ).not.toThrow();
+  });
+
+  it("keeps database validation enabled by default for the normal Node server", () => {
+    expect(() =>
       validateProductionEnvironment({
         appId: "app",
         cookieSecret: "unused-legacy-secret",
-        databaseUrl: "mysql://configured",
+        databaseUrl: "",
         isProduction: true,
         supabaseUrl: "https://example.supabase.co",
         supabasePublishableKey: "sb_publishable_test",
       })
-    ).not.toThrow();
+    ).toThrow(
+      "Missing required production environment variables: DATABASE_URL"
+    );
   });
 
   it("still enforces the legacy cookie secret when that mode is enabled", () => {

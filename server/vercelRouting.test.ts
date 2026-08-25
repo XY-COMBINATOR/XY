@@ -89,12 +89,12 @@ describe("Vercel deployment routing", () => {
       "utf8"
     );
 
-    expect(rootRoute).toContain('from "../server/app"');
+    expect(rootRoute).toContain('from "../server/vercelApp"');
     expect(rootRoute).toContain("export default function handler");
-    expect(rootRoute).toContain("apiApp(request, response)");
-    expect(catchAllRoute).toContain('from "../../server/app"');
+    expect(rootRoute).toContain("vercelApiApp(request, response)");
+    expect(catchAllRoute).toContain('from "../../server/vercelApp"');
     expect(catchAllRoute).toContain("export default function handler");
-    expect(catchAllRoute).toContain("apiApp(request, response)");
+    expect(catchAllRoute).toContain("vercelApiApp(request, response)");
   });
 
   it("prevents CDN caching of dynamic API responses", async () => {

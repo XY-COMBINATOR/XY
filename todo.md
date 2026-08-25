@@ -161,3 +161,4 @@
 - [x] Re-audit every production authentication and dashboard data-path implementation without assuming any Vercel environment value is wrong; verified the Vercel adapter, browser transport, auth context, Supabase verification, database fallback, tRPC procedures, and dashboard lifecycle.
 - [x] Verify the Vercel function adapter, tRPC transport, server context, Supabase verification, database fallback, and dashboard query lifecycle with focused tests and a production-mode local API smoke test.
 - [ ] Deliver the proven code correction through protected checks and live route probes.
+- [x] Remove the Vercel tRPC cold-start dependency on database validation while preserving strict database checks for the normal Node server, then add route-level regression coverage and protected delivery.
