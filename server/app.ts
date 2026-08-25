@@ -1,7 +1,7 @@
 import express from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { appRouter } from "./routers";
-import { createContext } from "./_core/context";
+import { createExpressContext } from "./_core/context";
 import { registerStorageProxy } from "./_core/storageProxy";
 import { validateProductionEnvironment } from "./_core/env";
 import { applySecurityHeaders } from "./security";
@@ -47,7 +47,10 @@ export function createApiApp(options: ApiAppOptions = {}) {
   registerAuthProxy(app);
   app.use(
     "/api/trpc",
-    createExpressMiddleware({ router: appRouter, createContext })
+    createExpressMiddleware({
+      router: appRouter,
+      createContext: createExpressContext,
+    })
   );
 
   // Express does not automatically reset a serverless invocation after errors.

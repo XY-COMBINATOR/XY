@@ -1,5 +1,5 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
-import type { Request } from "express";
+import type { SessionRequest } from "./_core/httpTypes";
 import type { User } from "../drizzle/schema";
 import * as db from "./db";
 import { ENV } from "./_core/env";
@@ -62,7 +62,7 @@ export function roleForSupabaseEmail(
   return isTeamAdmin(email, adminEmail) ? "admin" : "user";
 }
 
-function bearerToken(request: Request) {
+function bearerToken(request: SessionRequest) {
   const header = request.headers.authorization;
   return typeof header === "string" && header.startsWith("Bearer ")
     ? header.slice(7)
@@ -148,7 +148,7 @@ async function userFromVerifiedClaims(
 
 /** Verify an access token against JWKS, then use Supabase Auth API as a bounded fallback. */
 export async function authenticateSupabaseRequest(
-  request: Request
+  request: SessionRequest
 ): Promise<User | null> {
   const token = bearerToken(request);
   if (!token || !ENV.supabaseUrl) return null;

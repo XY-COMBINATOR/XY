@@ -7,10 +7,10 @@ import type {
   NodeHTTPRequest,
   NodeHTTPResponse,
 } from "@trpc/server/adapters/node-http";
-import type { Request, Response } from "express";
 import { appRouter } from "./routers";
 import { createContext } from "./_core/context";
 import { ENV } from "./_core/env";
+import type { SessionResponse } from "./_core/httpTypes";
 
 function applyNodeSecurityHeaders(
   request: NodeHTTPRequest,
@@ -61,13 +61,45 @@ function applyNodeSecurityHeaders(
   next();
 }
 
+function createSessionResponse(response: NodeHTTPResponse): SessionResponse {
+  return {
+    clearCookie(name, options = {}) {
+      const cookieParts = [
+        `${encodeURIComponent(name)}=`,
+        `Path=${options.path ?? "/"}`,
+        "Max-Age=0",
+        "Expires=Thu, 01 Jan 1970 00:00:00 GMT",
+      ];
+      if (options.domain) cookieParts.push(`Domain=${options.domain}`);
+      if (options.httpOnly ?? true) cookieParts.push("HttpOnly");
+      if (options.secure ?? ENV.isProduction) cookieParts.push("Secure");
+      if (options.sameSite) {
+        cookieParts.push(
+          `SameSite=${options.sameSite === true ? "Strict" : options.sameSite}`
+        );
+      }
+      response.setHeader("Set-Cookie", cookieParts.join("; "));
+      return this;
+    },
+  };
+}
+
 function createNodeContext({
   req,
   res,
 }: NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>) {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const protocol = Array.isArray(forwardedProto)
+    ? forwardedProto[0]
+    : forwardedProto?.split(",")[0];
+
   return createContext({
-    req: req as unknown as Request,
-    res: res as unknown as Response,
+    req: {
+      headers: req.headers,
+      protocol,
+      socket: { remoteAddress: req.socket?.remoteAddress },
+    },
+    res: createSessionResponse(res),
   });
 }
 

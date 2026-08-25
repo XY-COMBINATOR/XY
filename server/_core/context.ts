@@ -1,15 +1,20 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../drizzle/schema";
 import { authenticateSupabaseRequest } from "../supabaseAuth";
+import type {
+  ContextOptions,
+  SessionRequest,
+  SessionResponse,
+} from "./httpTypes";
 
 export type TrpcContext = {
-  req: CreateExpressContextOptions["req"];
-  res: CreateExpressContextOptions["res"];
+  req: SessionRequest;
+  res: SessionResponse;
   user: User | null;
 };
 
 export async function createContext(
-  opts: Pick<CreateExpressContextOptions, "req" | "res">
+  opts: ContextOptions
 ): Promise<TrpcContext> {
   let user: User | null = null;
 
@@ -25,4 +30,14 @@ export async function createContext(
     res: opts.res,
     user,
   };
+}
+
+export function createExpressContext({
+  req,
+  res,
+}: Pick<CreateExpressContextOptions, "req" | "res">) {
+  return createContext({
+    req: req as unknown as SessionRequest,
+    res: res as unknown as SessionResponse,
+  });
 }
