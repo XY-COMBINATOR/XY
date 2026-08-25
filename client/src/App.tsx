@@ -18,6 +18,7 @@ const Collective = lazy(() => import("./pages/Collective"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const People = lazy(() => import("./pages/People"));
+const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
 
 function Router() {
@@ -28,6 +29,9 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/collective" component={Collective} />
         <Route path="/people" component={People} />
+        {xyOsEnabled && (
+          <Route path="/projects/:slug" component={ProjectDetail} />
+        )}
         {xyOsEnabled && <Route path="/projects" component={Projects} />}
         <Route path="/capabilities" component={Capabilities} />
         <Route path="/contact" component={Contact} />

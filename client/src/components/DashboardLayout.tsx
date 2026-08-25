@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/useMobile";
 import { apiFailureMessage } from "@/lib/apiFailure";
-import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Radar } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
@@ -30,8 +30,8 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "Command center", path: "/dashboard" },
+  { icon: Radar, label: "Project radar", path: "/projects" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
