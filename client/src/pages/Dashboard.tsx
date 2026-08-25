@@ -1,6 +1,7 @@
 import { ArrowUpRight, LoaderCircle, Plus, ShieldCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
+import { useAuthBoundary } from "@/contexts/AuthBoundaryContext";
 import { DashboardOfflineIndicator } from "@/components/DashboardOfflineIndicator";
 import {
   filterWorkspaceProjects,
@@ -279,10 +280,11 @@ function ProjectWorkspace() {
 }
 
 function DashboardContent() {
-  // DashboardLayout renders this only after its authenticated shell is ready.
-  // Keep one auth lifecycle: the tRPC transport independently awaits the
-  // current Supabase session before sending the role request.
+  // The layout only mounts this subtree after Supabase has restored a user.
+  // The boundary user makes that invariant explicit to every protected child.
+  const { user: sessionUser } = useAuthBoundary();
   const serverRoleQuery = trpc.auth.me.useQuery(undefined, {
+    enabled: Boolean(sessionUser),
     staleTime: 0,
   });
   const serverUser = serverRoleQuery.data;

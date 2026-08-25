@@ -11,8 +11,10 @@ describe("dashboard auth lifecycle", () => {
   it("uses the dashboard layout auth boundary instead of a second useAuth hook", () => {
     const source = readFileSync(dashboardPath, "utf8");
 
-    expect(source).not.toContain("useAuth");
+    expect(source).not.toContain('from "@/_core/hooks/useAuth"');
     expect(source).not.toContain("enabled: !authLoading");
     expect(source).toContain("trpc.auth.me.useQuery");
+    expect(source).toContain("useAuthBoundary");
+    expect(source).toContain("enabled: Boolean(sessionUser)");
   });
 });
