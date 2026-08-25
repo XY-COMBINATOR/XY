@@ -79,6 +79,24 @@ describe("Vercel deployment routing", () => {
     expect(route).toContain("sendMagicLink(request.body)");
   });
 
+  it("ships root and catch-all tRPC function routes for dashboard procedures", async () => {
+    const rootRoute = await readFile(
+      path.join(projectPath, "api/trpc.ts"),
+      "utf8"
+    );
+    const catchAllRoute = await readFile(
+      path.join(projectPath, "api/trpc/[...path].ts"),
+      "utf8"
+    );
+
+    expect(rootRoute).toContain('from "../server/app"');
+    expect(rootRoute).toContain("export default function handler");
+    expect(rootRoute).toContain("apiApp(request, response)");
+    expect(catchAllRoute).toContain('from "../../server/app"');
+    expect(catchAllRoute).toContain("export default function handler");
+    expect(catchAllRoute).toContain("apiApp(request, response)");
+  });
+
   it("prevents CDN caching of dynamic API responses", async () => {
     const configText = await readFile(
       path.join(projectPath, "vercel.json"),
