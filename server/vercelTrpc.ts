@@ -90,8 +90,8 @@ function createNodeContext({
 }: NodeHTTPCreateContextFnOptions<NodeHTTPRequest, NodeHTTPResponse>) {
   const forwardedProto = req.headers["x-forwarded-proto"];
   const protocol = Array.isArray(forwardedProto)
-    ? forwardedProto[0]
-    : forwardedProto?.split(",")[0];
+    ? (forwardedProto[0] ?? "")
+    : (forwardedProto?.split(",")[0] ?? "");
 
   return createContext({
     req: {
