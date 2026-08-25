@@ -7,16 +7,16 @@ import {
   listProjectsForTeam,
   listPublicProjects,
   updateProject,
-} from "./db";
-import { guardInquiryDistributed } from "./contactGuard";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { systemRouter } from "./_core/systemRouter";
+} from "./db.js";
+import { guardInquiryDistributed } from "./contactGuard.js";
+import { getSessionCookieOptions } from "./_core/cookies.js";
+import { systemRouter } from "./_core/systemRouter.js";
 import {
   adminProcedure,
   protectedProcedure,
   publicProcedure,
   router,
-} from "./_core/trpc";
+} from "./_core/trpc.js";
 import { TRPCError } from "@trpc/server";
 
 /** Public inquiry contract: strict limits and a hidden honeypot reject common bot payloads before storage. */
