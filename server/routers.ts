@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   createContactRequest,
   createProject,
+  getUserByOpenId,
   listContactRequests,
   listProjectsForTeam,
   listPublicProjects,
@@ -67,6 +68,13 @@ export const appRouter = router({
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
+    persistedRole: adminProcedure.query(async ({ ctx }) => {
+      const storedUser = await getUserByOpenId(ctx.user.openId);
+      return {
+        persisted: Boolean(storedUser),
+        role: storedUser?.role ?? null,
+      } as const;
+    }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });

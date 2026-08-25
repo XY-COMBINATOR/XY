@@ -174,3 +174,4 @@
 - [ ] Replace runtime-reachable `@shared` aliases in the Vercel tRPC graph with explicit relative `.js` imports and verify production health
 - [ ] Resolve the signed-in dashboard state that alternates between SYNCING VIEW and UNAVAILABLE VIEW instead of showing ADMIN VIEW for the designated administrator
 - [ ] Regressively audit the latest production UNAVAILABLE VIEW report across client session state, bearer transport, server verification, role mapping, cache state, and deployment output; apply and verify the complete correction
+- [ ] Add a safe authenticated administrator-only verification path or documented database check confirming the persisted production role for the signed-in Supabase subject, then record the result
