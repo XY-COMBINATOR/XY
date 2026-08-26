@@ -22,7 +22,13 @@ import {
 } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/useMobile";
 import { apiFailureMessage } from "@/lib/apiFailure";
-import { LayoutDashboard, LogOut, PanelLeft, Radar } from "lucide-react";
+import {
+  BarChart3,
+  LayoutDashboard,
+  LogOut,
+  PanelLeft,
+  Radar,
+} from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from "./DashboardLayoutSkeleton";
@@ -31,6 +37,7 @@ import { Input } from "./ui/input";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Command center", path: "/dashboard" },
+  { icon: BarChart3, label: "Admin analytics", path: "/dashboard/analytics" },
   { icon: Radar, label: "Project radar", path: "/projects" },
 ];
 
@@ -105,15 +112,14 @@ export default function DashboardLayout({
     };
 
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
-          <div className="flex flex-col items-center gap-6">
-            <h1 className="text-2xl font-semibold tracking-tight text-center">
-              Sign in to continue
-            </h1>
-            <p className="text-sm text-muted-foreground text-center max-w-sm">
+      <div className="dashboard-auth-shell">
+        <div className="dashboard-auth-card">
+          <div className="dashboard-auth-heading">
+            <p className="dashboard-auth-kicker">XY OS / CONTROL ROOM</p>
+            <h1>ENTER THE SIGNAL.</h1>
+            <p id="team-access-description" className="dashboard-auth-note">
               Team members receive a secure one-time email link. Public sign-ups
-              are disabled.
+              remain closed by design.
             </p>
           </div>
           {isConfigured ? (
@@ -124,13 +130,18 @@ export default function DashboardLayout({
                 void requestLink();
               }}
             >
+              <label className="dashboard-auth-label" htmlFor="team-email">
+                TEAM EMAIL
+              </label>
               <Input
+                id="team-email"
                 type="email"
                 value={email}
                 onChange={event => setEmail(event.target.value)}
                 placeholder="member@example.com"
                 required
                 autoComplete="email"
+                aria-describedby="team-access-description"
               />
               <Button
                 type="submit"

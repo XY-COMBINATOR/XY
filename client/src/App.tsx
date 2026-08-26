@@ -9,6 +9,7 @@ import NotFound from "@/pages/NotFound";
 import { lazy, Suspense } from "react";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import DashboardLayout from "./components/DashboardLayout";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import { xyOsEnabled } from "./lib/featureFlags";
@@ -16,6 +17,7 @@ import { xyOsEnabled } from "./lib/featureFlags";
 const Capabilities = lazy(() => import("./pages/Capabilities"));
 const Collective = lazy(() => import("./pages/Collective"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Analytics = lazy(() => import("./pages/Analytics"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const People = lazy(() => import("./pages/People"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
@@ -35,6 +37,11 @@ function Router() {
         {xyOsEnabled && <Route path="/projects" component={Projects} />}
         <Route path="/capabilities" component={Capabilities} />
         <Route path="/contact" component={Contact} />
+        <Route path="/dashboard/analytics">
+          <DashboardLayout>
+            <Analytics />
+          </DashboardLayout>
+        </Route>
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />

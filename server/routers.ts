@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   createContactRequest,
   createProject,
+  getProjectAnalytics,
   getUserByOpenId,
   listContactRequests,
   listProjectsForTeam,
@@ -82,6 +83,9 @@ export const appRouter = router({
         success: true,
       } as const;
     }),
+  }),
+  analytics: router({
+    overview: adminProcedure.query(() => getProjectAnalytics()),
   }),
   projects: router({
     publicList: publicProcedure.query(() => listPublicProjects()),

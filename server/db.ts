@@ -1,4 +1,4 @@
-import { desc, eq, lt, sql } from "drizzle-orm";
+import { count, desc, eq, lt, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   ContactRequest,
@@ -118,6 +118,68 @@ export async function listProjectsForTeam(): Promise<Project[]> {
   } catch (error) {
     console.warn("[Projects] Team index unavailable:", error);
     return [];
+  }
+}
+
+export type ProjectAnalytics = {
+  totalProjects: number;
+  publicProjects: number;
+  privateProjects: number;
+  averageProgress: number;
+  teamMembers: number;
+  statusBreakdown: Record<Project["status"], number>;
+  recentProjects: Project[];
+  dataAvailable: boolean;
+};
+
+const emptyProjectAnalytics = (): ProjectAnalytics => ({
+  totalProjects: 0,
+  publicProjects: 0,
+  privateProjects: 0,
+  averageProgress: 0,
+  teamMembers: 0,
+  statusBreakdown: { idea: 0, active: 0, shipped: 0, paused: 0 },
+  recentProjects: [],
+  dataAvailable: false,
+});
+
+export async function getProjectAnalytics(): Promise<ProjectAnalytics> {
+  const db = await getDb();
+  if (!db) return emptyProjectAnalytics();
+
+  try {
+    const [allProjects, memberCount] = await Promise.all([
+      db.select().from(projects).orderBy(desc(projects.updatedAt)).limit(100),
+      db.select({ value: count() }).from(users),
+    ]);
+    const statusBreakdown = emptyProjectAnalytics().statusBreakdown;
+    allProjects.forEach(project => {
+      statusBreakdown[project.status] += 1;
+    });
+    const progressTotal = allProjects.reduce(
+      (total, project) => total + project.progress,
+      0
+    );
+
+    return {
+      totalProjects: allProjects.length,
+      publicProjects: allProjects.filter(
+        project => project.visibility === "public"
+      ).length,
+      privateProjects: allProjects.filter(
+        project => project.visibility === "private"
+      ).length,
+      averageProgress: allProjects.length
+        ? Math.round(progressTotal / allProjects.length)
+        : 0,
+      teamMembers: Number(memberCount[0]?.value ?? 0),
+      statusBreakdown,
+      recentProjects: allProjects.slice(0, 5),
+      dataAvailable: true,
+    };
+  } catch (error) {
+    console.warn("[Analytics] Project metrics unavailable:", error);
+    return emptyProjectAnalytics();
   }
 }
 
