@@ -44,9 +44,7 @@
       "compositePrimaryKeys": {
         "contactRateWindows_sourceHash": {
           "name": "contactRateWindows_sourceHash",
-          "columns": [
-            "sourceHash"
-          ]
+          "columns": ["sourceHash"]
         }
       },
       "uniqueConstraints": {},
@@ -97,9 +95,7 @@
       "compositePrimaryKeys": {
         "contactRequests_id": {
           "name": "contactRequests_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {},
@@ -182,17 +178,13 @@
       "compositePrimaryKeys": {
         "users_id": {
           "name": "users_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {
         "users_openId_unique": {
           "name": "users_openId_unique",
-          "columns": [
-            "openId"
-          ]
+          "columns": ["openId"]
         }
       },
       "checkConstraint": {}

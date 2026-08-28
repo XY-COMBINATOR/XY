@@ -31,11 +31,25 @@ class ErrorBoundary extends Component<Props, State> {
           <div className="system-recovery-panel">
             <AlertTriangle size={34} aria-hidden="true" />
             <p>INTERFACE INTERRUPTION</p>
-            <h2>THE CONNECTION<br />LOST ITS RHYTHM.</h2>
-            <span>Nothing has been submitted automatically. You can try this view again or return to the previous coordinate.</span>
+            <h2>
+              THE CONNECTION
+              <br />
+              LOST ITS RHYTHM.
+            </h2>
+            <span>
+              Nothing has been submitted automatically. You can try this view
+              again or return to the previous coordinate.
+            </span>
             <div>
-              <button onClick={this.handleRetry}><RotateCcw size={16} /> Try again</button>
-              <button className="system-recovery-secondary" onClick={this.handleGoBack}><ArrowLeft size={16} /> Go back</button>
+              <button onClick={this.handleRetry}>
+                <RotateCcw size={16} /> Try again
+              </button>
+              <button
+                className="system-recovery-secondary"
+                onClick={this.handleGoBack}
+              >
+                <ArrowLeft size={16} /> Go back
+              </button>
             </div>
           </div>
         </div>

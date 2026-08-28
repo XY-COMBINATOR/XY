@@ -8,7 +8,9 @@ describe("createInquiryGuard", () => {
     guard("visitor-one");
     guard("visitor-one");
 
-    expect(() => guard("visitor-one")).toThrow(expect.objectContaining({ code: "TOO_MANY_REQUESTS" }));
+    expect(() => guard("visitor-one")).toThrow(
+      expect.objectContaining({ code: "TOO_MANY_REQUESTS" })
+    );
   });
 
   it("derives a stable hash without retaining the raw source value", () => {

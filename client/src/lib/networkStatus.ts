@@ -1,6 +1,11 @@
-type NetworkEventTarget = Pick<Window, "addEventListener" | "removeEventListener">;
+type NetworkEventTarget = Pick<
+  Window,
+  "addEventListener" | "removeEventListener"
+>;
 
-export function isNetworkOffline(network: Pick<Navigator, "onLine"> | undefined) {
+export function isNetworkOffline(
+  network: Pick<Navigator, "onLine"> | undefined
+) {
   return network ? !network.onLine : false;
 }
 

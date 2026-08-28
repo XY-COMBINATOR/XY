@@ -20,7 +20,8 @@ export function ApiRecoveryNotice({ queryClient }: ApiRecoveryNoticeProps) {
       if (event.type !== "updated" || event.action.type !== "error") return;
 
       const nextError = event.query.state.error;
-      if (nextError instanceof Error && nextError.message === UNAUTHED_ERR_MSG) return;
+      if (nextError instanceof Error && nextError.message === UNAUTHED_ERR_MSG)
+        return;
       setError(nextError);
     });
   }, [queryClient]);

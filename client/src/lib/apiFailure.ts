@@ -2,7 +2,8 @@
 export const apiTimeoutMs = 12_000;
 
 export function isApiTimeout(error: unknown) {
-  const detail = error instanceof Error ? `${error.name} ${error.message}` : String(error);
+  const detail =
+    error instanceof Error ? `${error.name} ${error.message}` : String(error);
   return /abort|timeout|timed out/i.test(detail);
 }
 
