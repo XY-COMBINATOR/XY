@@ -10,7 +10,10 @@ describe("assetUrlFromOrigin", () => {
 
   it("creates a stable CDN URL without duplicate path separators", () => {
     expect(
-      assetUrlFromOrigin("/manus-storage/brand.png", "https://assets.example.com///")
+      assetUrlFromOrigin(
+        "/manus-storage/brand.png",
+        "https://assets.example.com///"
+      )
     ).toBe("https://assets.example.com/manus-storage/brand.png");
   });
 

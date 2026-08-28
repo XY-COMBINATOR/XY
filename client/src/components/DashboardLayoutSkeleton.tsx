@@ -1,8 +1,12 @@
-import { Skeleton } from './ui/skeleton';
+import { Skeleton } from "./ui/skeleton";
 
 export function DashboardLayoutSkeleton() {
   return (
-    <div className="flex min-h-screen bg-background" aria-busy="true" aria-live="polite">
+    <div
+      className="flex min-h-screen bg-background"
+      aria-busy="true"
+      aria-live="polite"
+    >
       <span className="sr-only">Loading dashboard data</span>
       {/* Sidebar skeleton */}
       <div className="relative w-[280px] border-r border-border bg-background p-4 space-y-6">
