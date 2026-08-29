@@ -108,6 +108,10 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
+# Inbound Lead Notifications (Optional - Discord / Slack webhook URL)
+CONTACT_WEBHOOK_URL=https://discord.com/api/webhooks/...
+
+
 # Storage (AWS S3 - Optional)
 AWS_REGION=us-east-1
 AWS_ACCESS_KEY_ID=your-key-id

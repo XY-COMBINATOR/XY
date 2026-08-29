@@ -7,6 +7,7 @@ import { xyOsEnabled } from "@/lib/featureFlags";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
 import { assetUrl } from "@/lib/assets";
+import { playChime, playToggleSound } from "@/lib/soundFx";
 import { ProjectsArchive } from "@/components/ProjectsArchive";
 import {
   ArrowDownRight,
@@ -114,7 +115,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeMember, setActiveMember] = useState("01");
-  const [isSoundOn, setIsSoundOn] = useState(true);
+  const [isSoundOn, setIsSoundOn] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 28);
@@ -165,15 +166,19 @@ export default function Home() {
           <button
             className="sound-button"
             type="button"
-            onClick={() => setIsSoundOn(value => !value)}
+            onClick={() => {
+              const nextState = !isSoundOn;
+              setIsSoundOn(nextState);
+              playToggleSound(nextState, true);
+            }}
             aria-label={
               isSoundOn
-                ? "Disable ambient animation"
-                : "Enable ambient animation"
+                ? "Disable ambient audio effects"
+                : "Enable ambient audio effects"
             }
           >
             {isSoundOn ? <Volume2 size={16} /> : <VolumeX size={16} />}
-            <span>{isSoundOn ? "ON" : "OFF"}</span>
+            <span>{isSoundOn ? "SOUND ON" : "SOUND OFF"}</span>
           </button>
           <button
             className="menu-button"
@@ -440,9 +445,20 @@ export default function Home() {
                     key={member.id}
                     type="button"
                     className={`team-card ${member.tone} ${active ? "is-active" : ""}`}
-                    onMouseEnter={() => setActiveMember(member.id)}
-                    onFocus={() => setActiveMember(member.id)}
-                    onClick={() => setActiveMember(member.id)}
+                    onMouseEnter={() => {
+                      if (member.id !== activeMember) {
+                        setActiveMember(member.id);
+                        playChime(520 + index * 70, 0.15, isSoundOn);
+                      }
+                    }}
+                    onFocus={() => {
+                      setActiveMember(member.id);
+                      playChime(520 + index * 70, 0.15, isSoundOn);
+                    }}
+                    onClick={() => {
+                      setActiveMember(member.id);
+                      playChime(520 + index * 70, 0.2, isSoundOn);
+                    }}
                     initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 32 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, amount: 0.15 }}
