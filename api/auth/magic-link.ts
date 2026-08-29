@@ -16,6 +16,32 @@ type AuthReply = {
 
 const redirectTarget = "https://xy-combinator.vercel.app";
 
+type RateLimitRecord = { count: number; expiresAt: number };
+
+const magicLinkRecords = new Map<string, RateLimitRecord>();
+
+function checkMagicLinkRateLimit(
+  key: string,
+  limit = 5,
+  windowMs = 15 * 60 * 1000
+): boolean {
+  const now = Date.now();
+  if (magicLinkRecords.size > 500) {
+    magicLinkRecords.forEach((record, k) => {
+      if (record.expiresAt <= now) magicLinkRecords.delete(k);
+    });
+  }
+  const current = magicLinkRecords.get(key);
+  const record =
+    !current || current.expiresAt <= now
+      ? { count: 0, expiresAt: now + windowMs }
+      : current;
+  if (record.count >= limit) return false;
+  record.count += 1;
+  magicLinkRecords.set(key, record);
+  return true;
+}
+
 /** Apply the endpoint security baseline without booting the full API service. */
 function setRouteHeaders(response: VercelResponse, projectUrl: string) {
   response.setHeader("Cache-Control", "no-store");
@@ -86,8 +112,16 @@ async function sendMagicLink(input: unknown): Promise<AuthReply> {
     return { status: 400, body: { error: "Enter a valid email address." } };
   }
 
+  if (!checkMagicLinkRateLimit(email)) {
+    return {
+      status: 429,
+      body: { error: "Too many sign-in attempts. Please try again later." },
+    };
+  }
+
   const projectUrl =
     process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL ?? "";
+
   const publishableKey = process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "";
   if (!projectUrl || !publishableKey) {
     return {

@@ -81,6 +81,19 @@ export async function guardInquiryDistributed(source: string) {
 }
 
 /**
+ * Sanitize text to prevent Discord mention abuse (@everyone, @here, role/user pings).
+ */
+export function sanitizeDiscordContent(text: string): string {
+  if (!text) return "";
+  return text
+    .replace(/@everyone/gi, match => `@\u200b${match.slice(1)}`)
+    .replace(/@here/gi, match => `@\u200b${match.slice(1)}`)
+    .replace(/<@/g, "<@\u200b")
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "") // strip control chars
+    .trim();
+}
+
+/**
  * Dispatches an instant notification to a configured Discord or Slack webhook URL
  * when a new lead submits the contact form.
  */
@@ -93,17 +106,21 @@ export async function notifyLeadWebhook(inquiry: {
     process.env.CONTACT_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL;
   if (!webhookUrl) return;
 
+  const safeName = sanitizeDiscordContent(inquiry.name).slice(0, 100);
+  const safeEmail = sanitizeDiscordContent(inquiry.email).slice(0, 254);
+  const safeMessage = sanitizeDiscordContent(inquiry.message).slice(0, 1000);
+
   try {
     const payload = {
       content: "📬 **New Client Inquiry — XY COMBINATOR**",
       embeds: [
         {
-          title: `New Message from ${inquiry.name}`,
+          title: `New Message from ${safeName}`,
           color: 0xe4382f,
           fields: [
-            { name: "Name", value: inquiry.name, inline: true },
-            { name: "Email", value: inquiry.email, inline: true },
-            { name: "Message", value: inquiry.message.slice(0, 1000) },
+            { name: "Name", value: safeName, inline: true },
+            { name: "Email", value: safeEmail, inline: true },
+            { name: "Message", value: safeMessage },
           ],
           footer: { text: "XY COMBINATOR Inbound Lead" },
           timestamp: new Date().toISOString(),

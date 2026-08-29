@@ -126,4 +126,31 @@ describe("same-origin Auth proxy", () => {
       error: "Signups not allowed for otp",
     });
   });
+
+  it("throttles excessive requests from the same identifier", async () => {
+    ENV.supabaseUrl = "https://project.supabase.co";
+    ENV.supabasePublishableKey = "sb_publishable_test";
+    vi.spyOn(globalThis, "fetch").mockImplementation(() =>
+      Promise.resolve(new Response("", { status: 200 }))
+    );
+
+    const testEmail = `spammer-${Date.now()}@example.com`;
+    const { handleMagicLinkRequest } = await import("./authProxy");
+
+    // First 5 attempts succeed
+    for (let i = 0; i < 5; i++) {
+      const res = await handleMagicLinkRequest({ email: testEmail }, testEmail);
+      expect(res.status).toBe(200);
+    }
+
+    // 6th attempt is throttled
+    const throttled = await handleMagicLinkRequest(
+      { email: testEmail },
+      testEmail
+    );
+    expect(throttled.status).toBe(429);
+    expect(throttled.body).toEqual({
+      error: "Too many sign-in attempts. Please try again later.",
+    });
+  });
 });

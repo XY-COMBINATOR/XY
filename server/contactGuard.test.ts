@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createInquiryGuard, hashInquirySource } from "./contactGuard";
+import {
+  createInquiryGuard,
+  hashInquirySource,
+  sanitizeDiscordContent,
+} from "./contactGuard";
 
 describe("createInquiryGuard", () => {
   it("rejects repeated requests from the same source within the guard window", () => {
@@ -20,5 +24,20 @@ describe("createInquiryGuard", () => {
     expect(hash).toHaveLength(64);
     expect(hash).not.toContain(source);
     expect(hashInquirySource(source)).toBe(hash);
+  });
+});
+
+describe("sanitizeDiscordContent", () => {
+  it("neutralizes @everyone and @here pings", () => {
+    expect(sanitizeDiscordContent("Hey @everyone look at this")).toBe(
+      "Hey @\u200beveryone look at this"
+    );
+    expect(sanitizeDiscordContent("Hey @HERE")).toBe("Hey @\u200bHERE");
+  });
+
+  it("neutralizes raw user mention tags and strips control characters", () => {
+    expect(sanitizeDiscordContent("Hello <@123456789>\x00\x07")).toBe(
+      "Hello <@\u200b123456789>"
+    );
   });
 });
