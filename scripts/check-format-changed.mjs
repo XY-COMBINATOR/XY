@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import fs from "node:fs/promises";
+import prettier from "prettier";
 
 const formatBase = process.env.FORMAT_BASE;
 
@@ -44,6 +46,27 @@ if (files.length === 0) {
   process.exit(0);
 }
 
-execFileSync("pnpm", ["exec", "prettier", "--check", ...files], {
-  stdio: "inherit",
-});
+let hasError = false;
+for (const file of files) {
+  try {
+    const text = await fs.readFile(file, "utf8");
+    const options = await prettier.resolveConfig(file);
+    const isFormatted = await prettier.check(text, {
+      ...options,
+      filepath: file,
+    });
+    if (!isFormatted) {
+      console.error(`[Prettier] ${file} is not formatted.`);
+      hasError = true;
+    }
+  } catch {
+    // If file was deleted or cannot be read, skip
+  }
+}
+
+if (hasError) {
+  console.error("Code formatting check failed. Run `pnpm format` to fix.");
+  process.exit(1);
+} else {
+  console.log("All changed files match Prettier code style!");
+}

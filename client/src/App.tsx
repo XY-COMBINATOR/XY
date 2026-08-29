@@ -22,6 +22,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const People = lazy(() => import("./pages/People"));
 const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const Projects = lazy(() => import("./pages/Projects"));
+const ComponentShowcase = lazy(() => import("./pages/ComponentShowcase"));
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -37,6 +38,7 @@ function Router() {
         {xyOsEnabled && <Route path="/projects" component={Projects} />}
         <Route path="/capabilities" component={Capabilities} />
         <Route path="/contact" component={Contact} />
+        <Route path="/showcase" component={ComponentShowcase} />
         <Route path="/dashboard/analytics">
           <DashboardLayout>
             <Analytics />
