@@ -88,20 +88,75 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
 }
 
+export const defaultShowcaseProjects: Project[] = [
+  {
+    id: 1,
+    slug: "kinetic-editorial",
+    title: "Kinetic Editorial Design System",
+    codename: "KINETIC",
+    summary:
+      "Asymmetric typography, signal-red motion corridors, and paper/ink material architecture.",
+    description:
+      "A high-impact editorial design system built for high-conviction creative practices. Featuring Space Grotesk display typography, subtle grain layers, responsive coordinate axes, and Web Audio API harmonic soundscapes.",
+    status: "shipped",
+    visibility: "public",
+    progress: 100,
+    accent: "#ef3d32",
+    leadOpenId: "system",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 2,
+    slug: "signal-orbit",
+    title: "Signal Orbit Interactive Canvas",
+    codename: "ORBIT",
+    summary:
+      "Real-time planetary physics and coordinate nodes rendering creative signals.",
+    description:
+      "An interactive 2D orbital simulation mapping creative collective coordinates into dynamic physical nodes. Built with performant 60fps HTML5 Canvas and spring physics.",
+    status: "active",
+    visibility: "public",
+    progress: 85,
+    accent: "#38bdf8",
+    leadOpenId: "system",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 3,
+    slug: "atelier-os",
+    title: "Atelier OS Control Room",
+    codename: "ATELIER",
+    summary:
+      "Distributed telemetry, rate-limiting guards, and zero-trust team dashboard.",
+    description:
+      "A complete operating system layer for creative collectives. Features automated lead routing, distributed IP abuse guards, and real-time project analytics.",
+    status: "active",
+    visibility: "public",
+    progress: 90,
+    accent: "#eab308",
+    leadOpenId: "system",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+];
+
 export async function listPublicProjects(): Promise<Project[]> {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) return defaultShowcaseProjects;
 
   try {
-    return await db
+    const results = await db
       .select()
       .from(projects)
       .where(eq(projects.visibility, "public"))
       .orderBy(desc(projects.updatedAt))
       .limit(48);
+    return results.length > 0 ? results : defaultShowcaseProjects;
   } catch (error) {
     console.warn("[Projects] Public index unavailable:", error);
-    return [];
+    return defaultShowcaseProjects;
   }
 }
 
