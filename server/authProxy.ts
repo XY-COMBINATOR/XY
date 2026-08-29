@@ -2,11 +2,19 @@ import type { Express, Request, Response } from "express";
 import { z } from "zod";
 import { ENV } from "./_core/env";
 
+import { createRateLimiter } from "./security";
+
 const magicLinkInput = z.object({
   email: z.string().trim().email().max(254),
 });
 
 const canonicalSite = "https://xy-combinator.vercel.app";
+
+/** Limit sign-in requests to 5 per 15 minutes per email/source to prevent flooding */
+export const magicLinkLimiter = createRateLimiter({
+  limit: 5,
+  windowMs: 15 * 60 * 1000,
+});
 
 type AuthProxyReply = {
   status: number;
@@ -37,11 +45,20 @@ function safeMessage(payload: unknown) {
  * user-controlled upstream URL or redirect destination.
  */
 export async function handleMagicLinkRequest(
-  input: unknown
+  input: unknown,
+  sourceIdentifier?: string
 ): Promise<AuthProxyReply> {
   const parsed = magicLinkInput.safeParse(input);
   if (!parsed.success) {
     return { status: 400, body: { error: "Enter a valid email address." } };
+  }
+
+  const rateKey = sourceIdentifier || parsed.data.email.toLowerCase();
+  if (!magicLinkLimiter(rateKey)) {
+    return {
+      status: 429,
+      body: { error: "Too many sign-in attempts. Please try again later." },
+    };
   }
 
   if (!ENV.supabaseUrl || !ENV.supabasePublishableKey) {
@@ -98,7 +115,11 @@ export function registerAuthProxy(app: Express) {
   app.post(
     "/api/auth/magic-link",
     async (request: Request, response: Response) => {
-      const result = await handleMagicLinkRequest(request.body);
+      const clientIp =
+        (request.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+        request.socket?.remoteAddress ||
+        "unknown-client";
+      const result = await handleMagicLinkRequest(request.body, clientIp);
       response.status(result.status).json(result.body);
     }
   );

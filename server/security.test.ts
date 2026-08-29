@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { getSessionSameSite } from "./_core/cookies";
 import { ENV, validateProductionEnvironment } from "./_core/env";
-import { applySecurityHeaders } from "./security";
+import {
+  applySecurityHeaders,
+  createRateLimiter,
+  isAllowedOrigin,
+} from "./security";
 import {
   designatedAdminEmail,
   isTeamAdmin,
@@ -144,5 +148,48 @@ describe("production security configuration", () => {
     expect(
       roleForSupabaseEmail("leader@example.com", "leader@example.com")
     ).toBe("admin");
+  });
+});
+
+describe("origin and CSRF protection", () => {
+  it("allows requests from same host, vercel preview domains, and localhost", () => {
+    expect(isAllowedOrigin(undefined, "xy-combinator.vercel.app")).toBe(true);
+    expect(
+      isAllowedOrigin(
+        "https://xy-combinator.vercel.app",
+        "xy-combinator.vercel.app"
+      )
+    ).toBe(true);
+    expect(
+      isAllowedOrigin(
+        "https://xy-combinator-preview.vercel.app",
+        "xy-combinator.vercel.app"
+      )
+    ).toBe(true);
+    expect(
+      isAllowedOrigin("http://localhost:5173", "xy-combinator.vercel.app")
+    ).toBe(true);
+  });
+
+  it("rejects requests from unauthorized third-party origins", () => {
+    expect(
+      isAllowedOrigin("https://evil-attacker.com", "xy-combinator.vercel.app")
+    ).toBe(false);
+    expect(
+      isAllowedOrigin("https://phishing-xy.com", "xy-combinator.vercel.app")
+    ).toBe(false);
+  });
+});
+
+describe("createRateLimiter", () => {
+  it("enforces sliding window request thresholds", () => {
+    const limiter = createRateLimiter({ limit: 3, windowMs: 60000 });
+
+    expect(limiter("user-ip-1")).toBe(true);
+    expect(limiter("user-ip-1")).toBe(true);
+    expect(limiter("user-ip-1")).toBe(true);
+    expect(limiter("user-ip-1")).toBe(false); // 4th request exceeds limit
+
+    expect(limiter("user-ip-2")).toBe(true); // separate key allowed
   });
 });

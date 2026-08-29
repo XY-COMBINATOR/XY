@@ -4,7 +4,11 @@ import { appRouter } from "./routers";
 import { createExpressContext } from "./_core/context";
 import { registerStorageProxy } from "./_core/storageProxy";
 import { validateProductionEnvironment } from "./_core/env";
-import { applySecurityHeaders } from "./security";
+import {
+  applyApiRateLimit,
+  applyOriginGuard,
+  applySecurityHeaders,
+} from "./security";
 import { registerAuthProxy } from "./authProxy";
 
 function requestBodyError(error: unknown) {
@@ -41,10 +45,13 @@ export function createApiApp(options: ApiAppOptions = {}) {
   app.set("trust proxy", 1);
   app.disable("x-powered-by");
   app.use(applySecurityHeaders);
+  app.use(applyOriginGuard);
+  app.use(applyApiRateLimit);
   app.use(express.json({ limit: "256kb", strict: true }));
   app.use(express.urlencoded({ limit: "32kb", extended: false }));
   registerStorageProxy(app);
   registerAuthProxy(app);
+
   app.use(
     "/api/trpc",
     createExpressMiddleware({
