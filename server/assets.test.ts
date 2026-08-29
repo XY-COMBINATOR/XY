@@ -22,4 +22,13 @@ describe("assetUrlFromOrigin", () => {
       "https://raw.githubusercontent.com/XY-COMBINATOR/XY/gh-pages/manus-storage/brand.png"
     );
   });
+
+  it("resolves local vector assets for known brand paths", () => {
+    expect(
+      assetUrl("/manus-storage/xy-combinator-brand-mark_8b6de4c4.png")
+    ).toBe("/assets/brand-mark.svg");
+    expect(assetUrl("/manus-storage/xy-signal-ribbon_df13d9c0.png")).toBe(
+      "/assets/signal-ribbon.svg"
+    );
+  });
 });

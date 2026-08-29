@@ -79,3 +79,44 @@ export async function guardInquiryDistributed(source: string) {
     });
   }
 }
+
+/**
+ * Dispatches an instant notification to a configured Discord or Slack webhook URL
+ * when a new lead submits the contact form.
+ */
+export async function notifyLeadWebhook(inquiry: {
+  name: string;
+  email: string;
+  message: string;
+}) {
+  const webhookUrl =
+    process.env.CONTACT_WEBHOOK_URL || process.env.DISCORD_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  try {
+    const payload = {
+      content: "📬 **New Client Inquiry — XY COMBINATOR**",
+      embeds: [
+        {
+          title: `New Message from ${inquiry.name}`,
+          color: 0xe4382f,
+          fields: [
+            { name: "Name", value: inquiry.name, inline: true },
+            { name: "Email", value: inquiry.email, inline: true },
+            { name: "Message", value: inquiry.message.slice(0, 1000) },
+          ],
+          footer: { text: "XY COMBINATOR Inbound Lead" },
+          timestamp: new Date().toISOString(),
+        },
+      ],
+    };
+
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    console.warn("[ContactWebhook] Failed to dispatch webhook:", error);
+  }
+}
