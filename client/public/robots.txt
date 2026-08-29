@@ -1,0 +1,6 @@
+﻿User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+
+Sitemap: https://xy-combinator.vercel.app/sitemap.xml

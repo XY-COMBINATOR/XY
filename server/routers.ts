@@ -10,7 +10,7 @@ import {
   listPublicProjects,
   updateProject,
 } from "./db.js";
-import { guardInquiryDistributed } from "./contactGuard.js";
+import { guardInquiryDistributed, notifyLeadWebhook } from "./contactGuard.js";
 import { getSessionCookieOptions } from "./_core/cookies.js";
 import { systemRouter } from "./_core/systemRouter.js";
 import {
@@ -121,6 +121,7 @@ export const appRouter = router({
         const { website, ...contactRequest } = input;
         void website;
         await createContactRequest(contactRequest);
+        void notifyLeadWebhook(contactRequest);
         return { accepted: true } as const;
       }),
     list: adminProcedure
